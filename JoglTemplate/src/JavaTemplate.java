@@ -1,5 +1,7 @@
 import com.jogamp.nativewindow.WindowClosingProtocol;
 import com.jogamp.opengl.*;
+
+
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.KeyListener;
 import com.jogamp.newt.opengl.GLWindow;
@@ -35,10 +37,6 @@ public class JavaTemplate {
     // Position of the sprite.
     private static int[] spritePos = new int[] { 200, 200 };
     private static int[] spritePos2 = new int[] {spritePos[0]-50, spritePos[1]-50};
-	
-    //for jump
-    public static int gravity = 1;
-    public static int jumpHeight = 10;
     
     //follow variables
 	static int enemySpeed = 3; //set enemy speed
@@ -46,7 +44,7 @@ public class JavaTemplate {
     //atan2()
 	static double target_direction = atan2(spritePos[1] - spritePos2[1], spritePos[0] - spritePos[0]);
 
-	// Textures for sprite and bg.
+	// Initialize texture variables for sprite, bg, projectile.
     private static int spriteTex,
 				       spriteEnemy;
     
@@ -54,34 +52,40 @@ public class JavaTemplate {
     				   bgTile2,
     				   bgTile3,
     				   projectile,
-						  tableTile1,
-						  tableTile2,
-						  tableTile3,
-						  tableTile4;
+					   tableTile1,
+					   tableTile2,
+					   tableTile3,
+					   tableTile4;
+    
+    private static int projTile;
     
     // Size of the sprite.
     private static int[] spriteSize = new int[2];
     private static int[] spriteEnemySize = new int[2];
-    CharacDef chara = new CharacDef(0,0,0,0);
+    private static int[] tileSize = new int[2];
+    private static int[] projectileSize = new int[2];
+    
     //checks for parts of the background tiles.
     //private static int backgroundCheck = 0;
+   
+    CharacDef chara = new CharacDef(0,0,0,0,0);
     
-    //initialize Camera, background
+    //initialize background
     private static Background bgMain, 
     						  bgItems;
     
-    private static int[] tileSize = new int[2];
-    
     //Size of window size
-    private static int windowWidth = 800;
-    private static int windowHeight = 800;
+    private static int windowWidth = 400;
+    private static int windowHeight = 400;
    
     //How big the grid is in the background in tiles.
     private static int gridHeight = 200;
     private static int gridWidth = 200;
     
-  //size of the game play
+    //size of the game play
     private static int worldHeight, worldWidth;
+    
+    //initialize camera
     private static Camera cam = new Camera(0,0, windowWidth, windowHeight);
     
 //***************************************************************
@@ -135,7 +139,7 @@ public class JavaTemplate {
 
 // Game initialization goes here.
         
-        /************SPRITE IMGS***********/
+        /************ LOAD SPRITE TEX***********/
 		spriteTex = glTexImageTGAFile(gl, "1.tga", spriteSize);
 		spriteEnemy = glTexImageTGAFile(gl, "1.tga", spriteEnemySize);
         
@@ -167,54 +171,62 @@ public class JavaTemplate {
 		tableTile2 = glTexImageTGAFile(gl, "tabble2.tga", tileSize);
 		tableTile3 = glTexImageTGAFile(gl, "tabble3.tga", tileSize);
 		tableTile4 = glTexImageTGAFile(gl, "tabble4.tga", tileSize);
-		projectile = glTexImageTGAFile(gl, "projectile.tga", tileSize);
 		
 		bgMain = new Background(bgTile2, false, gridWidth, gridHeight);
+		bgItems = new Background(bgTile, false, 10, 10);
 		//bgItems = new Background(bgTile, true, gridWidth-100, gridHeight-100);
 		
-		
-		bgItems.getTile(0, 0).setImage(bgTile);
-		bgItems.getTile(0, 1).setImage(bgTile);
-		bgItems.getTile(0, 2).setImage(bgTile);
-		bgItems.getTile(1, 0).setImage(bgTile);
-		bgItems.getTile(1, 1).setImage(bgTile);
-		bgItems.getTile(1, 2).setImage(bgTile);
-		bgItems.getTile(2, 0).setImage(bgTile);
-		bgItems.getTile(2, 1).setImage(bgTile);
-		bgItems.getTile(2, 2).setImage(bgTile);
-		bgItems.getTile(3, 0).setImage(bgTile);
-		bgItems.getTile(3, 1).setImage(bgTile);
-		bgItems.getTile(3, 2).setImage(bgTile);
-		bgItems.getTile(4, 0).setImage(bgTile);
-		bgItems.getTile(4, 1).setImage(bgTile);
-		bgItems.getTile(4, 2).setImage(bgTile);
-		bgItems.getTile(5, 0).setImage(bgTile);
-		bgItems.getTile(5, 1).setImage(bgTile);
-		bgItems.getTile(5, 2).setImage(bgTile);
-		bgItems.getTile(6, 0).setImage(bgTile);
-		bgItems.getTile(6, 1).setImage(bgTile);
-		bgItems.getTile(6, 2).setImage(bgTile);
-		bgItems.getTile(7, 0).setImage(bgTile);
-		bgItems.getTile(7, 1).setImage(bgTile);
-		bgItems.getTile(7, 2).setImage(bgTile);
-		bgItems.getTile(8, 0).setImage(bgTile);
-		bgItems.getTile(8, 1).setImage(bgTile);
-		bgItems.getTile(8, 2).setImage(bgTile);
-		bgItems.getTile(9, 0).setImage(bgTile);
-		bgItems.getTile(9, 1).setImage(bgTile);
-		bgItems.getTile(9, 2).setImage(bgTile);
-		bgItems.getTile(10, 0).setImage(bgTile);
-		bgItems.getTile(10, 1).setImage(bgTile);
-		bgItems.getTile(10, 2).setImage(bgTile);
-		
+		bgMain.getTile(0, 0).setImage(bgTile);
+		bgMain.getTile(0, 1).setImage(bgTile);
+		bgMain.getTile(0, 2).setImage(bgTile);
+		bgMain.getTile(1, 0).setImage(bgTile);
+		bgMain.getTile(1, 1).setImage(bgTile);
+		bgMain.getTile(1, 2).setImage(bgTile);
+		bgMain.getTile(2, 0).setImage(bgTile);
+		bgMain.getTile(2, 1).setImage(bgTile);
+		bgMain.getTile(2, 2).setImage(bgTile);
+		bgMain.getTile(3, 0).setImage(bgTile);
+		bgMain.getTile(3, 1).setImage(bgTile);
+		bgMain.getTile(3, 2).setImage(bgTile);
+		bgMain.getTile(4, 0).setImage(bgTile);
+		bgMain.getTile(4, 1).setImage(bgTile);
+		bgMain.getTile(4, 2).setImage(bgTile);
+		bgMain.getTile(5, 0).setImage(bgTile);
+		bgMain.getTile(5, 1).setImage(bgTile);
+		bgMain.getTile(5, 2).setImage(bgTile);
+		bgMain.getTile(6, 0).setImage(bgTile);
+		bgMain.getTile(6, 1).setImage(bgTile);
+		bgMain.getTile(6, 2).setImage(bgTile);
+		bgMain.getTile(7, 0).setImage(bgTile);
+		bgMain.getTile(7, 1).setImage(bgTile);
+		bgMain.getTile(7, 2).setImage(bgTile);
+		bgMain.getTile(8, 0).setImage(bgTile);
+		bgMain.getTile(8, 1).setImage(bgTile);
+		bgMain.getTile(8, 2).setImage(bgTile);
+		bgMain.getTile(9, 0).setImage(bgTile);
+		bgMain.getTile(9, 1).setImage(bgTile);
+		bgMain.getTile(9, 2).setImage(bgTile);
+		bgMain.getTile(10, 0).setImage(bgTile);
+		bgMain.getTile(10, 1).setImage(bgTile);
+		bgMain.getTile(10, 2).setImage(bgTile);
+
 		//table
 		bgMain.getTile(1, 3).setImage(tableTile1);
 		bgMain.getTile(1, 4).setImage(tableTile3);
 		bgMain.getTile(2, 3).setImage(tableTile2);
 		bgMain.getTile(2, 4).setImage(tableTile4);
-	    
-		//bgMain.getTile(2, 3).setImage(projectile);
 		
+		bgMain.getTile(1, 7).setImage(tableTile1);
+		bgMain.getTile(1, 8).setImage(tableTile3);
+		bgMain.getTile(2, 7).setImage(tableTile2);
+		bgMain.getTile(2, 8).setImage(tableTile4);
+	    
+	
+		//Initialize characters using charadef class
+		CharacDef chara = new CharacDef(spritePos[0], spritePos[1], spriteSize[0], spriteSize[1], spriteTex);
+		
+		//projectile: make array of projectiles 
+		projectile = glTexImageTGAFile(gl, "projectile.tga", projectileSize);
 		
 	    //size of the world 
 	    worldHeight = gridHeight * tileSize[0];
@@ -227,18 +239,20 @@ public class JavaTemplate {
 		
 		///////////////////////////////////////////////
 		//Frame and Time variables
+		
+		// Physics Time Frames
+		long lastFrame;
+		long currentFrame = System.nanoTime();
+		int lastPhysicsFrameMs = 0;
+		long curFrameMs = 0;
+		int physicsDeltaMs = 10;
+		
+		//Regular Time Frames
+		long physicsDeltaMS = 10;
         long lastFrameNS;
         long curFrameNS = System.nanoTime();
         while (!shouldExit) {
         	
-        	// Physics update
-        	 //do {
-        	 // 1. Physics movement
-        	 // 2. Physics collision detection
-        	 // 3. Physics collision resolution
-        	 //lastPhysicsFrameMs += physicsDeltaMs;
-        	 //} while (lastPhysicsFrameMs + physicsDeltaMs < curFrameMs );
-
             System.arraycopy(kbState, 0, kbPrevState, 0, kbState.length);
             lastFrameNS = curFrameNS; //NS = nano secs
             curFrameNS = System.nanoTime();
@@ -258,6 +272,16 @@ public class JavaTemplate {
             int down = KeyEvent.VK_DOWN;
 
    
+        	// Physics update
+            do{
+              	 // 1. Physics movement
+              	 // 2. Physics collision detection
+              	 // 3. Physics collision resolution
+                physicsDeltaMs = 1000;
+            	lastPhysicsFrameMs += physicsDeltaMs;
+            }
+          	while (lastPhysicsFrameMs + physicsDeltaMs < curFrameMs );
+            
 /************************************************************************/        
 /*********************** Game logic goes here.***************************/
 /************************************************************************/
@@ -291,20 +315,31 @@ public class JavaTemplate {
 	         }
 	        //for the main sprite, keep in bounds of the main background
 	        if (spritePos[0] < 0)
-	        	spritePos[0] = 0;
+	        	spritePos[0] = 0 + spriteSize[0];
 	        if (spritePos[0] > worldWidth - spriteSize[0])
-	        	spritePos[0] = worldWidth- spriteSize[0];
+	        	spritePos[0] = worldWidth - spriteSize[0];
 	        if (spritePos[1] < 0)
-	        	spritePos[1] = 0;
+	        	spritePos[1] = 0 + spriteSize[0];
 	        if (spritePos[1] > worldHeight- spriteSize[1])
 	        	spritePos[1] = worldHeight- spriteSize[1];
-	        
-	        //for jump later
-//            public static int gravity = 1;
-//            public static int jumpHeight = 10;
+	         
+//          public static int gravity = 1; <--set this in character 
+//          public static int jumpHeight = 10;
+//	        if (kbState[KeyEvent.VK_W] == true){
+	        	//if (spriteTex.isGrounded()== true && kbState[KeyEvent.VK_W]){
+	        		//velocity = 
+	        	//}
+	        	//if (isGrounded) yVelocity = 0
+	        	//		if (isGrounded && jumpButtonPressed)
+	        	//		 yVelocity = jumpVelocity
+	        	//		 yPos = yPos + yVelocity * deltaTime
+	        	//		 yVelocity = yVelocity + gravity * deltaTime
+//	        }
+	       
 	        
 	        //shoot command
 	        if (kbState[KeyEvent.VK_SPACE] == true){
+	        	
 	        }
 	        
 			/****************CAMERA STUFF*****************/	        
@@ -321,6 +356,7 @@ public class JavaTemplate {
 			cameraBox = new AABBbox (cam.getX(), cam.getY(), windowHeight, windowWidth);
 	        
 	        //set up AABB box stuff between the camera and sprite
+			//need collision resolution AABBbox
 			spriteBox.setX(spritePos[0]);
 			spriteBox.setY(spritePos[1]);
 			spriteBox.setWidth(spriteSize[0]);
@@ -344,9 +380,9 @@ public class JavaTemplate {
 		    if (spritePos2[1] < spritePos[1] - 20){
 		    	spritePos2[1] += target_direction * 3;
 		    }
+
 		    
-		    
-		    //check if bg is in bounds w/in camera
+		   //check if bg is in bounds w/in camera
 		   // int bgCheck = backgroundCheck(cam.getX(), cam.getY());
 			int startX = (int) Math.floor(cam.x / tileSize[0]);
 			int endX = (int)Math.ceil(cam.x + windowHeight  / tileSize[0]);
@@ -371,9 +407,9 @@ public class JavaTemplate {
 			
 			//DRAW THE SPRITES
 			  glDrawSprite(gl, spriteTex, spritePos[0] - cam.x, spritePos[1] - cam.y, spriteSize[0], spriteSize[1]);
-			   if (AABBIntersect(cameraBox, spriteBox)) {
+//			   if (AABBIntersect(cameraBox, spriteBox)) {
 					glDrawSprite(gl, spriteEnemy, (spritePos2[0]) - cam.x, (spritePos2[1]) - cam.y, spriteEnemySize[0], spriteEnemySize[1]);
-			   }
+//			   }
         }
     }
 
@@ -384,21 +420,21 @@ public class JavaTemplate {
     public static boolean AABBIntersect(AABBbox box1, AABBbox box2){
     	 // box1 to the rights
     	 if (box1.getX() > box2.getY() + box2.getWidth()) {
-    	 return false;
+    	 return true;
     	 }
     	 // box1 to the left
     	 if (box1.getX() + box1.getY() < box2.getX()) {
-    	 return false;                                                                                                                                                                                                                                                                                                                                                                                                                                     
+    	 return true;                                                                                                                                                                                                                                                                                                                                                                                                                                     
     	 }
     	 // box1 below
     	 if (box1.getY() > box2.getY() + box2.getHeight()) {
-    	 return false;
+    	 return true;
     	 }
     	 // box1 above
     	 if (box1.getY() + box1.getHeight() < box2.getY()) {
-    	 return false;
-    	 }
     	 return true;
+    	 }
+    	 return false;
     }
     
     //check if the background is in bounds of the camera
@@ -412,7 +448,7 @@ public class JavaTemplate {
     //Reverse the sprite 
     public static boolean reverse(int sprite, double x, double y, int width, int height, int reverse_x, int reverse_y){
     	int xdif, ydif;
-    	if (reverse_x == -1) { xdif =width;} else { xdif = 0;}
+    	if (reverse_x == -1) { xdif = width;} else { xdif = 0;}
     	if (reverse_y == -1) { ydif = height;} else { ydif = 0;}
     	//glDrawSprite (sprite, x - xdif - cam.x, y - ydif - cam.y. height, reverse_x, reverse_y);
     	return true;
