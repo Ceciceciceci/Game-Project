@@ -1,7 +1,6 @@
 import com.jogamp.nativewindow.WindowClosingProtocol;
 import com.jogamp.opengl.*;
 
-
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.KeyListener;
 import com.jogamp.newt.opengl.GLWindow;
@@ -59,7 +58,11 @@ public class JavaTemplate {
     
     private static int projTile;
     
-    // Size of the sprite.
+    //initialize background
+    private static Background bgMain, 
+    						  bgItems;
+    
+    // Size of the sprite/tiles/projectiles
     private static int[] spriteSize = new int[2];
     private static int[] spriteEnemySize = new int[2];
     private static int[] tileSize = new int[2];
@@ -67,12 +70,7 @@ public class JavaTemplate {
     
     //checks for parts of the background tiles.
     //private static int backgroundCheck = 0;
-   
-    CharacDef chara = new CharacDef(0,0,0,0,0);
-    
-    //initialize background
-    private static Background bgMain, 
-    						  bgItems;
+  
     
     //Size of window size
     private static int windowWidth = 400;
@@ -220,22 +218,23 @@ public class JavaTemplate {
 		bgMain.getTile(1, 8).setImage(tableTile3);
 		bgMain.getTile(2, 7).setImage(tableTile2);
 		bgMain.getTile(2, 8).setImage(tableTile4);
-	    
-	
-		//Initialize characters using charadef class
+
+		//Initialize characters 
 		CharacDef chara = new CharacDef(spritePos[0], spritePos[1], spriteSize[0], spriteSize[1], spriteTex);
+		chara.setHealth(2);
 		
-		//projectile: make array of projectiles 
+		//projectile: make an array of projectiles 
 		projectile = glTexImageTGAFile(gl, "projectile.tga", projectileSize);
 		
 	    //size of the world 
 	    worldHeight = gridHeight * tileSize[0];
 	    worldWidth = gridHeight * tileSize[1];
 	     
-	    
 		/*************AABB bounding box****************/
 		AABBbox spriteBox;
 		AABBbox cameraBox;
+		spriteBox = new AABBbox (spritePos[0], spritePos[1], spriteSize[0], spriteSize[1]);
+		cameraBox = new AABBbox (cam.getX(), cam.getY(), windowHeight, windowWidth);
 		
 		///////////////////////////////////////////////
 		//Frame and Time variables
@@ -248,7 +247,6 @@ public class JavaTemplate {
 		int physicsDeltaMs = 10;
 		
 		//Regular Time Frames
-		long physicsDeltaMS = 10;
         long lastFrameNS;
         long curFrameNS = System.nanoTime();
         while (!shouldExit) {
@@ -274,9 +272,14 @@ public class JavaTemplate {
    
         	// Physics update
             do{
-              	 // 1. Physics movement
-              	 // 2. Physics collision detection
-              	 // 3. Physics collision resolution
+            	for (int i = 0; i < chara.getProjectile().size(); i++) {
+					ArrayList<Projectile> projectile1 = (ArrayList<Projectile>) chara.getProjectile();
+					Projectile p = projectile1.get(i);
+					p.updateProj();
+					//update the projectile
+            	}
+            	
+            	//if chara is jumping and shot --> health
                 physicsDeltaMs = 1000;
             	lastPhysicsFrameMs += physicsDeltaMs;
             }
@@ -288,72 +291,78 @@ public class JavaTemplate {
             if (kbState[KeyEvent.VK_ESCAPE]) {
                 shouldExit = true;
             }
-	     
+            
+            //CharacDef chara = new CharacDef(spritePos[0], spritePos[1], spriteSize[0], spriteSize[1], spriteTex);
+            //public CharacDef (int x, int y, int height, int width, int spriteTex)
             /***************KEYBOARD STATES****************/
             if (kbState[left] == true) {
-	        	spritePos[0] -= deltaTimeMS * 1;
+            	chara.setX((int) (chara.getX() - deltaTimeMS * 1));
 	        	walkAni.updateSprite(deltaTimeMS);
-				spriteTex = walkAni.getCurrentFrame();
+				chara.setCurrentTexture(walkAni.getCurrentFrame());
 	        }
 	        
 	        if (kbState[right] == true) {
-	        	spritePos[0] += deltaTimeMS * 1;
+	        	chara.setX((int) (chara.getX() + deltaTimeMS * 1));
 	        	walkAni.updateSprite(deltaTimeMS);
-				spriteTex = walkAni.getCurrentFrame();
+	        	chara.setCurrentTexture(walkAni.getCurrentFrame());
 	        }
 	        
 	        if (kbState[up] == true) {
-	        	spritePos[1] -= deltaTimeMS * 1;
+	        	chara.setY((int) (chara.getY() - deltaTimeMS * 1));
 	        	walkAni.updateSprite(deltaTimeMS);
-				spriteTex = walkAni.getCurrentFrame();
+	        	chara.setCurrentTexture(walkAni.getCurrentFrame());
 	        }
 	        
 	        if (kbState[down] == true) {
-	        	spritePos[1] += deltaTimeMS * 1;
+	        	chara.setY((int) (chara.getY() + deltaTimeMS * 1));
 	        	walkAni.updateSprite(deltaTimeMS);
-				spriteTex = walkAni.getCurrentFrame();
+	        	chara.setCurrentTexture(walkAni.getCurrentFrame());
 	         }
 	        //for the main sprite, keep in bounds of the main background
-	        if (spritePos[0] < 0)
-	        	spritePos[0] = 0 + spriteSize[0];
-	        if (spritePos[0] > worldWidth - spriteSize[0])
-	        	spritePos[0] = worldWidth - spriteSize[0];
-	        if (spritePos[1] < 0)
-	        	spritePos[1] = 0 + spriteSize[0];
-	        if (spritePos[1] > worldHeight- spriteSize[1])
-	        	spritePos[1] = worldHeight- spriteSize[1];
+	        if (chara.getX() < 0)
+	        	chara.setX(0 + spriteSize[0]);
+//	        	spritePos[0] = 0 + spriteSize[0];
+	        if (chara.getX() > worldWidth - spriteSize[0])
+	        	chara.setX(worldWidth - spriteSize[0]);
+//	        	spritePos[0] = worldWidth - spriteSize[0];
+	        if (chara.getY() < 0)
+	        	chara.setY(0 + spriteSize[0]);
+//	        	spritePos[1] = 0 + spriteSize[0];
+	        if (chara.getY() > worldHeight- spriteSize[1])
+	        	chara.setY(worldWidth - spriteSize[1]);
+//	        	spritePos[1] = worldHeight- spriteSize[1];
 	         
-//          public static int gravity = 1; <--set this in character 
-//          public static int jumpHeight = 10;
-//	        if (kbState[KeyEvent.VK_W] == true){
-	        	//if (spriteTex.isGrounded()== true && kbState[KeyEvent.VK_W]){
-	        		//velocity = 
-	        	//}
-	        	//if (isGrounded) yVelocity = 0
-	        	//		if (isGrounded && jumpButtonPressed)
-	        	//		 yVelocity = jumpVelocity
-	        	//		 yPos = yPos + yVelocity * deltaTime
-	        	//		 yVelocity = yVelocity + gravity * deltaTime
-//	        }
-	       
 	        
-	        //shoot command
 	        if (kbState[KeyEvent.VK_SPACE] == true){
-	        	
+	        	chara.addProjectile(new Projectile(chara.getX() + 50, chara.getY(), projectileSize[0],
+						projectileSize[1], false));
+	        	chara.setShooting(false);
 	        }
 	        
-			/****************CAMERA STUFF*****************/	        
-	        cam.x = spritePos[0] - (cam.width/2);
-	        cam.y = spritePos[1] - (cam.height/2);
+	        if (kbState[KeyEvent.VK_W] == true){
+//	        	if (spriteTex.isGrounded()== true && kbState[KeyEvent.VK_W]){
+//	        		velocity = 
+//	        	}
+//	        	if (isGrounded) yVelocity = 0
+//	        			if (isGrounded && jumpButtonPressed)
+//	        			 yVelocity = jumpVelocity
+//	        			 yPos = yPos + yVelocity * deltaTime
+//	        			 yVelocity = yVelocity + gravity * deltaTime
+	        }
+	      
 	        
+
+	        /****************CAMERA STUFF*****************/	        
+	        //cam.x = spritePos[0] - (cam.width/2);
+	        //cam.y = spritePos[1] - (cam.height/2);
+	        cam.x = chara.getX() - (cam.width/2);
+	        cam.y = chara.getY() - (cam.height/2);
 	        
 			if (cam.x < 0) {cam.setX(0);}
 			if (cam.y < 0) {cam.setY(0);}
 			if (cam.x > worldWidth - cam.width) {cam.setX(worldWidth - cam.width);}
 			if (cam.y > worldHeight - cam.height) {cam.setY(worldHeight - cam.height);}
-			
-			spriteBox = new AABBbox (spritePos2[0], spritePos2[1], spriteSize[0], spriteSize[1]);
-			cameraBox = new AABBbox (cam.getX(), cam.getY(), windowHeight, windowWidth);
+		
 	        
 	        //set up AABB box stuff between the camera and sprite
 			//need collision resolution AABBbox
@@ -381,21 +390,23 @@ public class JavaTemplate {
 		    	spritePos2[1] += target_direction * 3;
 		    }
 
-		    
 		   //check if bg is in bounds w/in camera
 		   // int bgCheck = backgroundCheck(cam.getX(), cam.getY());
 			int startX = (int) Math.floor(cam.x / tileSize[0]);
-			int endX = (int)Math.ceil(cam.x + windowHeight  / tileSize[0]);
-			int startY = (int) Math.floor(cam.y / tileSize[0]);
-			int endY = (int)Math.ceil(cam.y + windowWidth / tileSize[1]);
+			int endX = (int)Math.ceil(cam.x+ windowWidth  / tileSize[0]);
+			int startY = (int) Math.floor(cam.y / tileSize[1]);
+			int endY = (int)Math.ceil(cam.y+ windowHeight / tileSize[1]);
 			
 			
-            gl.glClearColor(0, 0, 0, 1);
+            /*****************************************************************
+             *************************DRAW SPRITES****************************
+             *****************************************************************/
+			gl.glClearColor(0, 0, 0, 1);
             gl.glClear(GL2.GL_COLOR_BUFFER_BIT);
             
-            // Draw the background
-            //check what's in the boundary
-			for (int x = startX; x < Math.min(bgMain.getWidth(), endX) ; x++) {
+            
+            //DRAW THE BACKGROUND
+			for (int x = startX; x < Math.min(bgMain.getWidth(), endX); x++) {
 				for (int y = startY; y < Math.min(bgMain.getHeight(), endY); y++) {
 						glDrawSprite(gl,bgMain.getTile(x, y).getImage(), 
 								x * tileSize[0] - cam.getX(),
@@ -405,11 +416,22 @@ public class JavaTemplate {
 				}
 			}
 			
-			//DRAW THE SPRITES
-			  glDrawSprite(gl, spriteTex, spritePos[0] - cam.x, spritePos[1] - cam.y, spriteSize[0], spriteSize[1]);
-//			   if (AABBIntersect(cameraBox, spriteBox)) {
+			//DRAW THE PROJECTILE
+			ArrayList<Projectile> charaProjectiles = (ArrayList<Projectile>) chara.getProjectile();
+			for (int i = 0; i < charaProjectiles.size(); i++) {
+				Projectile p = charaProjectiles.get(i);
+				glDrawSprite(gl, projectile, 
+								p.getX() - cam.getX(), 
+								p.getY() - cam.getY(),
+								projectileSize[0], 
+								projectileSize[1]);
+			}
+			
+			//DRAW THE SPRITE
+			  glDrawSprite(gl, chara.getCurrentTexture(), chara.getX() - cam.x, chara.getY() - cam.y, chara.getWidth(), chara.getHeight());
+			   if (AABBIntersect(cameraBox, spriteBox)) { 
 					glDrawSprite(gl, spriteEnemy, (spritePos2[0]) - cam.x, (spritePos2[1]) - cam.y, spriteEnemySize[0], spriteEnemySize[1]);
-//			   }
+			   }
         }
     }
 
