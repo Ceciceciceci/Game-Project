@@ -22,7 +22,6 @@ import static java.lang.Math.atan2;
 //Enemies shoot projectiles at the player and he or she can get hit
 //Raycast style instant shots.
 
-
 public class JavaTemplate {
     // Set this to true to make the game loop exit.
     private static boolean shouldExit;
@@ -151,6 +150,15 @@ public class JavaTemplate {
 			new FrameDef(glTexImageTGAFile(gl, "7.tga", spriteSize), (float) 1 ),
 			new FrameDef(glTexImageTGAFile(gl, "8.tga", spriteSize), (float) 1 )
         };
+        FrameDef[] walkingLeft= { 
+			new FrameDef(glTexImageTGAFile(gl, "2.tga", spriteSize), (float) 1 ),
+			new FrameDef(glTexImageTGAFile(gl, "3.tga", spriteSize), (float) 1 ),				
+			new FrameDef(glTexImageTGAFile(gl, "4.tga", spriteSize), (float) 1 ),
+			new FrameDef(glTexImageTGAFile(gl, "5.tga", spriteSize), (float) 1 ),
+			new FrameDef(glTexImageTGAFile(gl, "6.tga", spriteSize), (float) 1 ),
+			new FrameDef(glTexImageTGAFile(gl, "7.tga", spriteSize), (float) 1 ),
+			new FrameDef(glTexImageTGAFile(gl, "8.tga", spriteSize), (float) 1 )
+        };
         
         FrameDef[] enemyWalking= { 
 			new FrameDef(glTexImageTGAFile(gl, "2.tga", spriteSize), (float) 1 ),
@@ -162,14 +170,13 @@ public class JavaTemplate {
 			new FrameDef(glTexImageTGAFile(gl, "8.tga", spriteSize), (float) 1 )
         };
         
-		FrameDef[] walkingUp = {
-        	new FrameDef(glTexImageTGAFile(gl, "walkF1.tga", spriteSize), (float) 1 ),
-		};
 //
 //		FrameDef[] jumping = {	
+        
 //		};
 		
 		FrameAnimation walkAni = new FrameAnimation(walking);
+		FrameAnimation walkAniLeft = new FrameAnimation(walkingLeft);
 		FrameAnimation walkAniEnemy = new FrameAnimation(enemyWalking);
 //		FrameAnimation walkUpAni = new FrameAnimation(walkingUp);
 //		FrameAnimation jumpAni = new FrameAnimation(jumping);
@@ -362,6 +369,7 @@ public class JavaTemplate {
 	        	chara.setShooting(false);
 	        }
 	        
+	        //JUMPING
 	        if (kbState[KeyEvent.VK_W] == true){
 	        	if (chara.isGrounded()== true && kbState[KeyEvent.VK_W]){
 	        		chara.setAcceleration(5);
