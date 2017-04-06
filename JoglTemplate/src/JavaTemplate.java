@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import static java.lang.Math.atan2;
 
 
-//HWK 3  DUE MARCH 22  WEDNESDAY
+//HWK 3
 //Add projectiles and a way to shoot them to your existing project. 
 //If you have yet to add enemies, add some enemies to the game (they do not need to move).
 //When a projectile hits the enemy, it should damage the enemy and then go away. 
@@ -35,17 +35,17 @@ public class JavaTemplate {
 
     // Position of the sprite.
     private static int[] spritePos = new int[] { 200, 200 };
-    private static int[] spritePos2 = new int[] {spritePos[0]-50, spritePos[1]-50};
+    private static int[] enemyPos = new int[] {spritePos[0]-50, spritePos[1]-50};
     
     //follow variables
 	static int enemySpeed = 3; //set enemy speed
 	
     //atan2()
-	static double target_direction = atan2(spritePos[1] - spritePos2[1], spritePos[0] - spritePos[0]);
+	static double target_direction = atan2(spritePos[1] - enemyPos[1], spritePos[0] - spritePos[0]);
 
 	// Initialize texture variables for sprite, bg, projectile.
     private static int spriteTex,
-				       spriteEnemy;
+				       enemyTex;
     
     private static int bgTile, 
     				   bgTile2,
@@ -64,7 +64,7 @@ public class JavaTemplate {
     
     // Size of the sprite/tiles/projectiles
     private static int[] spriteSize = new int[2];
-    private static int[] spriteEnemySize = new int[2];
+    private static int[] enemySize = new int[2];
     private static int[] tileSize = new int[2];
     private static int[] projectileSize = new int[2];
     
@@ -77,8 +77,8 @@ public class JavaTemplate {
     private static int windowHeight = 400;
    
     //How big the grid is in the background in tiles.
-    private static int gridHeight = 200;
-    private static int gridWidth = 200;
+    private static int gridHeight = 100;
+    private static int gridWidth = 100;
     
     //size of the game play
     private static int worldHeight, worldWidth;
@@ -139,7 +139,7 @@ public class JavaTemplate {
         
         /************ LOAD SPRITE TEX***********/
 		spriteTex = glTexImageTGAFile(gl, "1.tga", spriteSize);
-		spriteEnemy = glTexImageTGAFile(gl, "1.tga", spriteEnemySize);
+		enemyTex = glTexImageTGAFile(gl, "1.tga", enemySize);
         
 		/*********SPRITE ANIMATION********/
         FrameDef[] walking= { 
@@ -151,18 +151,34 @@ public class JavaTemplate {
 			new FrameDef(glTexImageTGAFile(gl, "7.tga", spriteSize), (float) 1 ),
 			new FrameDef(glTexImageTGAFile(gl, "8.tga", spriteSize), (float) 1 )
         };
-//		FrameDef[] walkingUp = {	
-//		};
+        
+        FrameDef[] enemyWalking= { 
+			new FrameDef(glTexImageTGAFile(gl, "2.tga", spriteSize), (float) 1 ),
+			new FrameDef(glTexImageTGAFile(gl, "3.tga", spriteSize), (float) 1 ),				
+			new FrameDef(glTexImageTGAFile(gl, "4.tga", spriteSize), (float) 1 ),
+			new FrameDef(glTexImageTGAFile(gl, "5.tga", spriteSize), (float) 1 ),
+			new FrameDef(glTexImageTGAFile(gl, "6.tga", spriteSize), (float) 1 ),
+			new FrameDef(glTexImageTGAFile(gl, "7.tga", spriteSize), (float) 1 ),
+			new FrameDef(glTexImageTGAFile(gl, "8.tga", spriteSize), (float) 1 )
+        };
+        
+		FrameDef[] walkingUp = {
+        	new FrameDef(glTexImageTGAFile(gl, "walkF1.tga", spriteSize), (float) 1 ),
+		};
 //
 //		FrameDef[] jumping = {	
 //		};
 		
 		FrameAnimation walkAni = new FrameAnimation(walking);
+		FrameAnimation walkAniEnemy = new FrameAnimation(enemyWalking);
 //		FrameAnimation walkUpAni = new FrameAnimation(walkingUp);
 //		FrameAnimation jumpAni = new FrameAnimation(jumping);
 		
 		
+		
+		
 		/*************BACKGROUND TEXTURES*************/
+		
 		bgTile = glTexImageTGAFile(gl, "purpletile.tga",tileSize); //wall tile
 		bgTile2 = glTexImageTGAFile(gl, "purpletile2.tga", tileSize); //floor tile
 		tableTile1 = glTexImageTGAFile(gl, "tabble1.tga", tileSize);
@@ -170,8 +186,8 @@ public class JavaTemplate {
 		tableTile3 = glTexImageTGAFile(gl, "tabble3.tga", tileSize);
 		tableTile4 = glTexImageTGAFile(gl, "tabble4.tga", tileSize);
 		
-		bgMain = new Background(bgTile2, false, gridWidth, gridHeight);
-		bgItems = new Background(bgTile, false, 10, 10);
+		bgMain = new Background(bgTile2, false, gridWidth, gridHeight); //main purple floor tile
+		bgItems = new Background(bgTile, false, 1, 1);
 		//bgItems = new Background(bgTile, true, gridWidth-100, gridHeight-100);
 		
 		bgMain.getTile(0, 0).setImage(bgTile);
@@ -221,7 +237,7 @@ public class JavaTemplate {
 
 		//Initialize characters 
 		CharacDef chara = new CharacDef(spritePos[0], spritePos[1], spriteSize[0], spriteSize[1], spriteTex);
-		chara.setHealth(2);
+		chara.setHealth(3);
 		
 		//projectile: make an array of projectiles 
 		projectile = glTexImageTGAFile(gl, "projectile.tga", projectileSize);
@@ -233,8 +249,16 @@ public class JavaTemplate {
 		/*************AABB bounding box****************/
 		AABBbox spriteBox;
 		AABBbox cameraBox;
-		spriteBox = new AABBbox (spritePos[0], spritePos[1], spriteSize[0], spriteSize[1]);
+		spriteBox = new AABBbox (chara.getX(), chara.getY(), chara.getWidth(), chara.getHeight());
 		cameraBox = new AABBbox (cam.getX(), cam.getY(), windowHeight, windowWidth);
+		
+		
+		/***Array of enemies***/
+		ArrayList<CharacDef> enemies = new ArrayList<CharacDef>();
+		enemies.add(new CharacDef(enemyPos[0] + 200, enemyPos[1], enemySize[0], enemySize[1], enemyTex));
+		enemies.add(new CharacDef(enemyPos[0] + 500, enemyPos[1]+500, enemySize[0], enemySize[1], enemyTex));
+		enemies.add(new CharacDef(enemyPos[0] + 100, enemyPos[1]+300, enemySize[0], enemySize[1], enemyTex));
+		enemies.add(new CharacDef(enemyPos[0] + 70, enemyPos[1]+100, enemySize[0], enemySize[1], enemyTex));	
 		
 		///////////////////////////////////////////////
 		//Frame and Time variables
@@ -269,13 +293,12 @@ public class JavaTemplate {
             int up = KeyEvent.VK_UP;
             int down = KeyEvent.VK_DOWN;
 
-   
-        	// Physics update
+        	/********PHYSICS UPDATE********/
             do{
             	for (int i = 0; i < chara.getProjectile().size(); i++) {
 					ArrayList<Projectile> projectile1 = (ArrayList<Projectile>) chara.getProjectile();
 					Projectile p = projectile1.get(i);
-					p.updateProj();
+					p.setUpdate();
 					//update the projectile
             	}
             	
@@ -285,9 +308,10 @@ public class JavaTemplate {
             }
           	while (lastPhysicsFrameMs + physicsDeltaMs < curFrameMs );
             
-/************************************************************************/        
-/*********************** Game logic goes here.***************************/
-/************************************************************************/
+            
+		/************************************************************************/        
+		/*********************** Game logic goes here.***************************/
+		/************************************************************************/
             if (kbState[KeyEvent.VK_ESCAPE]) {
                 shouldExit = true;
             }
@@ -296,41 +320,40 @@ public class JavaTemplate {
             //public CharacDef (int x, int y, int height, int width, int spriteTex)
             /***************KEYBOARD STATES****************/
             if (kbState[left] == true) {
-            	chara.setX((int) (chara.getX() - deltaTimeMS * 1));
+            	chara.setX((int) (chara.getX() - deltaTimeMS * 0.5));
 	        	walkAni.updateSprite(deltaTimeMS);
 				chara.setCurrentTexture(walkAni.getCurrentFrame());
 	        }
 	        
 	        if (kbState[right] == true) {
-	        	chara.setX((int) (chara.getX() + deltaTimeMS * 1));
+	        	chara.setX((int) (chara.getX() + deltaTimeMS * 0.5));
 	        	walkAni.updateSprite(deltaTimeMS);
 	        	chara.setCurrentTexture(walkAni.getCurrentFrame());
 	        }
 	        
 	        if (kbState[up] == true) {
-	        	chara.setY((int) (chara.getY() - deltaTimeMS * 1));
+	        	chara.setY((int) (chara.getY() - deltaTimeMS * 0.5));
 	        	walkAni.updateSprite(deltaTimeMS);
 	        	chara.setCurrentTexture(walkAni.getCurrentFrame());
+				chara.setReverse(true);
 	        }
 	        
 	        if (kbState[down] == true) {
-	        	chara.setY((int) (chara.getY() + deltaTimeMS * 1));
+	        	chara.setY((int) (chara.getY() + deltaTimeMS * 0.5));
 	        	walkAni.updateSprite(deltaTimeMS);
 	        	chara.setCurrentTexture(walkAni.getCurrentFrame());
 	         }
+	        
+	        
 	        //for the main sprite, keep in bounds of the main background
 	        if (chara.getX() < 0)
-	        	chara.setX(0 + spriteSize[0]);
-//	        	spritePos[0] = 0 + spriteSize[0];
+	        	chara.setX(0);
 	        if (chara.getX() > worldWidth - spriteSize[0])
 	        	chara.setX(worldWidth - spriteSize[0]);
-//	        	spritePos[0] = worldWidth - spriteSize[0];
-	        if (chara.getY() < 0)
-	        	chara.setY(0 + spriteSize[0]);
-//	        	spritePos[1] = 0 + spriteSize[0];
+	        if (chara.getY() < 0) 
+	        	chara.setY(0);
 	        if (chara.getY() > worldHeight- spriteSize[1])
 	        	chara.setY(worldWidth - spriteSize[1]);
-//	        	spritePos[1] = worldHeight- spriteSize[1];
 	         
 	        
 	        if (kbState[KeyEvent.VK_SPACE] == true){
@@ -340,14 +363,16 @@ public class JavaTemplate {
 	        }
 	        
 	        if (kbState[KeyEvent.VK_W] == true){
-//	        	if (spriteTex.isGrounded()== true && kbState[KeyEvent.VK_W]){
-//	        		velocity = 
-//	        	}
-//	        	if (isGrounded) yVelocity = 0
-//	        			if (isGrounded && jumpButtonPressed)
-//	        			 yVelocity = jumpVelocity
-//	        			 yPos = yPos + yVelocity * deltaTime
-//	        			 yVelocity = yVelocity + gravity * deltaTime
+	        	if (chara.isGrounded()== true && kbState[KeyEvent.VK_W]){
+	        		chara.setAcceleration(5);
+	        	}
+	        	if (chara.isGrounded()) { 
+	        		int yVelocity = 0; int jumpVelocity = 4; int yPos; int gravity = 1;
+	        			if (chara.isGrounded() && kbState[KeyEvent.VK_W])
+	        			 yVelocity = jumpVelocity;
+	        			 yPos = (int) (chara.getY() + yVelocity * deltaTimeMS);
+	        			 yVelocity = (int) (yVelocity + gravity * deltaTimeMS);
+	        	}
 	        }
 	      
 	        
@@ -377,17 +402,17 @@ public class JavaTemplate {
 			cameraBox.setHeight(windowHeight);
 		    
 	        //enemy sprite stuff
-		    if (spritePos2[0] > spritePos[0] + 20){
-		        spritePos2[0] -= target_direction * 3;
+		    if (enemyPos[0] > chara.getX() + 20){
+		    	enemyPos[0] -= target_direction * 3;
 		    }
-		    if (spritePos2[0] < spritePos[0] -20){
-		        spritePos2[0] += target_direction * 3;
+		    if (enemyPos[0] < chara.getX() - 20){
+		    	enemyPos[0] += target_direction * 3;
 		    }
-		    if (spritePos2[1] > spritePos[1] + 20){
-		        spritePos2[1] -= target_direction * 3;
+		    if (enemyPos[1] > chara.getY() + 20){
+		    	enemyPos[1] -= target_direction * 3;
 		    }
-		    if (spritePos2[1] < spritePos[1] - 20){
-		    	spritePos2[1] += target_direction * 3;
+		    if (enemyPos[1] < chara.getY() - 20){
+		    	enemyPos[1] += target_direction * 3;
 		    }
 
 		   //check if bg is in bounds w/in camera
@@ -416,6 +441,9 @@ public class JavaTemplate {
 				}
 			}
 			
+			//DRAW THE COLLISIONS
+			
+			
 			//DRAW THE PROJECTILE
 			ArrayList<Projectile> charaProjectiles = (ArrayList<Projectile>) chara.getProjectile();
 			for (int i = 0; i < charaProjectiles.size(); i++) {
@@ -427,11 +455,19 @@ public class JavaTemplate {
 								projectileSize[1]);
 			}
 			
+			//DRAW ENEMY SPRITES
+			for (CharacDef e : enemies) {
+				if (e.getVisible()) {
+					if (AABBIntersect(cameraBox, e.charaHitbox())) {
+						glDrawSprite(gl, e.getCurrentTexture(), (e.getX()) - cam.x, (e.getY()) - cam.y,
+								enemySize[0], enemySize[1]);
+					}
+				}
+			}
+			 
+			
 			//DRAW THE SPRITE
-			  glDrawSprite(gl, chara.getCurrentTexture(), chara.getX() - cam.x, chara.getY() - cam.y, chara.getWidth(), chara.getHeight());
-			   if (AABBIntersect(cameraBox, spriteBox)) { 
-					glDrawSprite(gl, spriteEnemy, (spritePos2[0]) - cam.x, (spritePos2[1]) - cam.y, spriteEnemySize[0], spriteEnemySize[1]);
-			   }
+			glDrawSprite(gl, chara.getCurrentTexture(), chara.getX() - cam.x, chara.getY() - cam.y, spriteSize[0], spriteSize[1]);	
         }
     }
 
@@ -440,24 +476,24 @@ public class JavaTemplate {
     //left, or to the right of the other box
     //box 1 = camera; box 2 = sprite
     public static boolean AABBIntersect(AABBbox box1, AABBbox box2){
-    	 // box1 to the rights
-    	 if (box1.getX() > box2.getY() + box2.getWidth()) {
-    	 return true;
-    	 }
-    	 // box1 to the left
-    	 if (box1.getX() + box1.getY() < box2.getX()) {
-    	 return true;                                                                                                                                                                                                                                                                                                                                                                                                                                     
-    	 }
-    	 // box1 below
-    	 if (box1.getY() > box2.getY() + box2.getHeight()) {
-    	 return true;
-    	 }
-    	 // box1 above
-    	 if (box1.getY() + box1.getHeight() < box2.getY()) {
-    	 return true;
-    	 }
-    	 return false;
-    }
+		// box1 to the right
+		if (box1.getX() > box2.getX() + box2.getWidth()) {
+			return false;
+		}
+		// box1 to the left
+		if (box1.getX() + box1.getWidth() < box2.getX()) {
+			return false;
+		}
+		// box1 below
+		if (box1.getY() > box2.getY() + box2.getHeight()) {
+			return false;
+		}
+		// box1 above
+		if (box1.getY() + box1.getHeight() < box2.getY()) {
+			return false;
+		}
+		return true;
+	}
     
     //check if the background is in bounds of the camera
 	public static int backgroundCheck(int x, int y) {
@@ -466,16 +502,7 @@ public class JavaTemplate {
 		//return (x / tileSize[0]) + ((y / tileSize[1]) * worldHeight);
 		return tile_y * tile_x;
 	}
-    
-    //Reverse the sprite 
-    public static boolean reverse(int sprite, double x, double y, int width, int height, int reverse_x, int reverse_y){
-    	int xdif, ydif;
-    	if (reverse_x == -1) { xdif = width;} else { xdif = 0;}
-    	if (reverse_y == -1) { ydif = height;} else { ydif = 0;}
-    	//glDrawSprite (sprite, x - xdif - cam.x, y - ydif - cam.y. height, reverse_x, reverse_y);
-    	return true;
-    	
-    }
+   
     
     // Load a file into an OpenGL texture and return that texture.
     public static int glTexImageTGAFile(GL2 gl, String filename, int[] out_size) {

@@ -40,7 +40,7 @@ public class FrameAnimation {
 		return frameDone;
 	}
 	
-	//update sprite frame based on time
+	//update sprite frame based on deltatime
 	public void updateSprite(float dTime){
 		time -= dTime;
 		if (time <= 0){

@@ -7,9 +7,11 @@ public class Projectile {
 	private int speed; 
 	private int distance;
 	private double gravity;
+	
 	private boolean visible;
 	private boolean isShot;	
 	private boolean update;
+	private boolean reverse;
 	private AABBbox collisionBox;
 	
 	public Projectile(int x, int y, int width, int height, boolean isShot){
@@ -19,16 +21,15 @@ public class Projectile {
 		this.height = height;
 		this.isShot = isShot;
 		if(isShot != true){
-			//speed = 3;
-			distance = 20;
+			speed = 2;
 			this.x = x;
 			this.y = y;
-		}
+		} 
 		else{
-			//speed = 0;
-			this.x = x;
+			speed = -2;
+			this.x = x - width;
 			this.y = y;
-		}
+		} 
 		this.gravity = 1;
 		this.distance = 0;	
 		collisionBox = new AABBbox(x, y, width, height);
@@ -48,20 +49,6 @@ public class Projectile {
 		this.y = y;
 	}
 
-	public void setWidth(int width){
-		this.width = width;
-	}
-	public int getWidth(){
-		return width;
-	}
-	
-	public void setHeight(int height){
-		this.height = height;
-	}
-	public int getHeight(){
-		return height;
-	}
-	
 	public void setDistance(int distance){
 		this.distance = distance;
 	}
@@ -82,10 +69,23 @@ public class Projectile {
 		visible = visi;
 	}
 	
+	public boolean isShot(){
+		return isShot;
+	}
+	
 	public boolean updateProj(){
 		return update;
 	}
 	public void setUpdate(){
-		this.update = update;
+		if(this.isShot()){
+			y += speed;
+			distance += speed;
+			collisionBox.setY(y);
+		}
+		else{
+			x += speed;
+			distance += speed;
+			collisionBox.setX(x);
+		}
 	}
 }

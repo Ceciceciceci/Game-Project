@@ -11,20 +11,23 @@ public class CharacDef {
 	AABBbox charaHitBox;
 	private int boxOffset;
 	
-	private boolean isShooting = true;
-	private boolean isShot = true;
-	private boolean isWalking = true;
-	private boolean isStanding = true; 
-	private boolean isJumping = true;
-	private boolean isGrounded = true;
- 
+	//reverse chara texture
+	private boolean reverse = false;
+	private boolean visible = true;
 	
+	private boolean isShooting = false;
+	private boolean isShot = false;
+	private boolean isWalking = false;
+	private boolean isStanding = false; 
+	private boolean isJumping = false;
+	private boolean isGrounded = false;
+ 
 	public CharacDef (int x, int y, int height, int width, int spriteTex){
 		this.x = x;
 		this.y = y;
 		this.height = height;
 		this.width = width;
-		spriteTex = tex;
+		tex = spriteTex;
 		
 		projectiles = new ArrayList<Projectile>();
 		charaHitBox = new AABBbox(x, y, width, height);
@@ -63,10 +66,6 @@ public class CharacDef {
 	public int getY() {
 		return y;
 	}
-	
-	public boolean isStand(boolean isStanding){
-		return isStanding;
-	}
 	 
 	 public void setAcceleration(double accel){
 		 acceleration = accel;
@@ -82,6 +81,28 @@ public class CharacDef {
 	 public void setCurrentTexture(int tex) {
 		 this.tex = tex;
 	 }
+	 
+	 public boolean getReverse() {
+	     return reverse;
+	 }
+
+	 public void setReverse(boolean bool) {
+		 reverse = bool;
+	 }
+	 
+	 public boolean isStand(boolean isStanding){
+		 return isStanding;
+	 }
+	 
+	 //Reverse the sprite 
+	 public boolean reverse(){
+
+	     x = x * -1;
+	     y = x * -1;
+	     return true;
+	    	
+	 }
+	 
 	 
 	//jumping state
 	//walking state
@@ -124,6 +145,18 @@ public class CharacDef {
 	 public void setHit(boolean isShot) {
 		 this.isShot = isShot;
 	 }
+	 
+	 public void setVisible(boolean bool){
+		 visible = bool;
+	 }
+		
+	 public boolean getVisible() {
+		 return visible;
+	 }
+	 
+	 public boolean isGrounded(){
+		return isGrounded;
+	}
 	 
 	
 }
