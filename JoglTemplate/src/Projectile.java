@@ -73,9 +73,6 @@ public class Projectile {
 		return isShot;
 	}
 	
-	public boolean updateProj(){
-		return update;
-	}
 	public void setUpdate(){
 		if(this.isShot()){
 			y += speed;

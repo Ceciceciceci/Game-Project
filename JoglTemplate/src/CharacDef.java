@@ -21,6 +21,7 @@ public class CharacDef {
 	private boolean isStanding = false; 
 	private boolean isJumping = false;
 	private boolean isGrounded = false;
+	private boolean isDead = false;
  
 	public CharacDef (int x, int y, int height, int width, int spriteTex){
 		this.x = x;
@@ -74,6 +75,22 @@ public class CharacDef {
 		 return acceleration;
 	 }	 
 	 
+	 public boolean isJumping() {
+		 return isJumping;
+	 }
+
+	 public void setJumping(boolean isJumping) {
+		 this.isJumping = isJumping;
+	 }
+	 
+	 public double getyVelocity() {
+		 return yVelocity;
+	 }
+
+	 public void setyVelocity(double yVelocity) {
+		 this.yVelocity = yVelocity;
+	 }
+	 
 	 public int getCurrentTexture() {
 		 return tex;
 	 }
@@ -107,9 +124,6 @@ public class CharacDef {
 	//jumping state
 	//walking state
 	//standing state
-	public boolean setState(){
-		return false;
-	}
 	
 	//SHOOT PART
 	//collision box AABB
@@ -156,6 +170,12 @@ public class CharacDef {
 	 
 	 public boolean isGrounded(){
 		return isGrounded;
+	}
+	public void setDead(boolean isDead){
+		this.isDead = isDead;
+	}
+	public boolean isDead(){
+		return isDead;
 	}
 	 
 	
