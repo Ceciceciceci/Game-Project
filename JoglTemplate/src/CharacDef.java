@@ -32,7 +32,7 @@ public class CharacDef {
 		
 		projectiles = new ArrayList<Projectile>();
 		charaHitBox = new AABBbox(x, y, width, height);
-		this.health= 2;
+		this.health= 10;
 		isShooting = false;
 		isShot = false;
 		boxOffset = 0;

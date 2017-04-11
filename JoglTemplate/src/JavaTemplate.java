@@ -18,9 +18,19 @@ import static java.lang.Math.atan2;
 //When a projectile hits the enemy, it should damage the enemy and then go away. 
 //There must be some enemies with health that need to be hit multiple times.
 
-//Extra credit:
-//Enemies shoot projectiles at the player and he or she can get hit
-//Raycast style instant shots.
+//character animation = O(1)
+//checking for collisions = O(10 --> 1)
+
+//HWK 4
+/*
+Due April 19th
+ Add background collision detection and
+resolution to your game.
+ Everything you've added so far must collide
+“sensibly”
+ Player, enemies, and projectiles
+ You only need top-down collision to be handled
+*/
 
 public class JavaTemplate {
     // Set this to true to make the game loop exit.
@@ -141,6 +151,8 @@ public class JavaTemplate {
 		enemyTex = glTexImageTGAFile(gl, "1.tga", enemySize);
         
 		/*********SPRITE ANIMATION********/
+		
+		//for the main character
         FrameDef[] walking= { 
 			new FrameDef(glTexImageTGAFile(gl, "2.tga", spriteSize), (float) 1 ),
 			new FrameDef(glTexImageTGAFile(gl, "3.tga", spriteSize), (float) 1 ),				
@@ -180,15 +192,14 @@ public class JavaTemplate {
 			new FrameDef(glTexImageTGAFile(gl, "4.tga", spriteSize), (float) 1 ),
 			new FrameDef(glTexImageTGAFile(gl, "4.tga", spriteSize), (float) 1 )
         };
-		
+        
+        
+        //enemy animation
+        
 		FrameAnimation walkAni = new FrameAnimation(walking);
 		FrameAnimation walkAniLeft = new FrameAnimation(walkingLeft);
 		FrameAnimation jumpingAni = new FrameAnimation(jumping);
 		FrameAnimation walkAniEnemy = new FrameAnimation(enemyWalking);
-//		FrameAnimation walkUpAni = new FrameAnimation(walkingUp);
-//		FrameAnimation jumpAni = new FrameAnimation(jumping);
-		
-		
 		
 		
 		/*************BACKGROUND TEXTURES*************/
@@ -270,9 +281,8 @@ public class JavaTemplate {
 		/***Array of enemies***/
 		ArrayList<CharacDef> enemies = new ArrayList<CharacDef>();
 		enemies.add(new Enemy(enemyPos[0] + 200, enemyPos[1], enemySize[0], enemySize[1], enemyTex));
-		enemies.add(new Enemy(enemyPos[0] + 500, enemyPos[1]+500, enemySize[0], enemySize[1], enemyTex));
+		enemies.add(new Enemy(enemyPos[0] + 15, enemyPos[1]+100, enemySize[0], enemySize[1], enemyTex));
 		enemies.add(new Enemy(enemyPos[0] + 100, enemyPos[1]+300, enemySize[0], enemySize[1], enemyTex));
-		enemies.add(new Enemy(enemyPos[0] + 70, enemyPos[1]+100, enemySize[0], enemySize[1], enemyTex));	
 		
 		///////////////////////////////////////////////
 		//Frame and Time variables
@@ -336,6 +346,7 @@ public class JavaTemplate {
 							c.setHit(!c.isShot());
 							if (c.getHealth() <= 0) {
 								c.setDead(true);
+								c.setVisible(false);
 							}
 						}
 					}
