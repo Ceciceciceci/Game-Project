@@ -27,7 +27,7 @@ Due April 19th
  Add background collision detection and
 resolution to your game.
  Everything you've added so far must collide
-“sensibly”
+sensibly
  Player, enemies, and projectiles
  You only need top-down collision to be handled
 */
@@ -185,11 +185,11 @@ public class JavaTemplate {
 //
         FrameDef[] jumping= { 
 			new FrameDef(glTexImageTGAFile(gl, "4.tga", spriteSize), (float) 1 ),
-			new FrameDef(glTexImageTGAFile(gl, "4.tga", spriteSize), (float) 1 ),				
+			new FrameDef(glTexImageTGAFile(gl, "2.tga", spriteSize), (float) 1 ),				
 			new FrameDef(glTexImageTGAFile(gl, "4.tga", spriteSize), (float) 1 ),
+			new FrameDef(glTexImageTGAFile(gl, "3.tga", spriteSize), (float) 1 ),
 			new FrameDef(glTexImageTGAFile(gl, "4.tga", spriteSize), (float) 1 ),
-			new FrameDef(glTexImageTGAFile(gl, "4.tga", spriteSize), (float) 1 ),
-			new FrameDef(glTexImageTGAFile(gl, "4.tga", spriteSize), (float) 1 ),
+			new FrameDef(glTexImageTGAFile(gl, "2.tga", spriteSize), (float) 1 ),
 			new FrameDef(glTexImageTGAFile(gl, "4.tga", spriteSize), (float) 1 )
         };
         
@@ -211,8 +211,8 @@ public class JavaTemplate {
 		tableTile4 = glTexImageTGAFile(gl, "tabble4.tga", tileSize);
 		
 		
-		bgItems = new Background(bgTile, true, gridWidth, gridHeight);
-		bgMain = new Background(bgTile2, false, gridWidth, gridHeight); //main purple floor tile
+		bgItems = new Background(bgTile, true,100,100);
+		bgMain = new Background(bgTile2, false,gridWidth, gridHeight); //main purple floor tile
 		//bgItems = new Background(bgTile, true, gridWidth-100, gridHeight-100);
 		
 		bgMain.getTile(0, 0).setImage(bgTile);
@@ -250,10 +250,10 @@ public class JavaTemplate {
 		bgMain.getTile(10, 2).setImage(bgTile);
 
 		//table
-		bgMain.getTile(1, 3).setImage(tableTile1);
-		bgMain.getTile(1, 4).setImage(tableTile3);
-		bgMain.getTile(2, 3).setImage(tableTile2);
-		bgMain.getTile(2, 4).setImage(tableTile4);
+		bgItems.getTile(0, 0).setImage(tableTile1);
+		bgItems.getTile(0, 1).setImage(tableTile3);
+		bgItems.getTile(1, 0).setImage(tableTile2);
+		bgItems.getTile(1, 1).setImage(tableTile4);
 		
 		bgMain.getTile(1, 7).setImage(tableTile1);
 		bgMain.getTile(1, 8).setImage(tableTile3);
@@ -404,7 +404,12 @@ public class JavaTemplate {
 	        	chara.setY(0);
 	        if (chara.getY() > worldHeight- spriteSize[1])
 	        	chara.setY(worldWidth - spriteSize[1]);
-	         
+
+	        for (CharacDef c : enemies) {
+	        if (AABBIntersect(chara.charaHitBox, c.charaHitbox())) {
+	        	
+	        }
+	        }
 	        
 	        if (kbState[KeyEvent.VK_SPACE] == true){
 	        	chara.addProjectile(new Projectile(chara.getX() + 50, chara.getY(), projectileSize[0],
@@ -444,8 +449,8 @@ public class JavaTemplate {
 	        
 	        //set up AABB box stuff between the camera and sprite
 			//need collision resolution AABBbox
-			spriteBox.setX(spritePos[0]);
-			spriteBox.setY(spritePos[1]);
+			spriteBox.setX(chara.getX());
+			spriteBox.setY(chara.getY());
 			spriteBox.setWidth(spriteSize[0]);
 			spriteBox.setHeight(spriteSize[1]);
 
@@ -487,6 +492,15 @@ public class JavaTemplate {
 			for (int x = startX; x < Math.min(bgMain.getWidth(), endX); x++) {
 				for (int y = startY; y < Math.min(bgMain.getHeight(), endY); y++) {
 						glDrawSprite(gl,bgMain.getTile(x, y).getImage(), 
+								x * tileSize[0] - cam.getX(),
+								y * tileSize[1] - cam.getY(), 
+								tileSize[0], 
+								tileSize[1]);
+				}
+			}
+			for (int x = startX; x < Math.min(bgItems.getWidth(), endX); x++) {
+				for (int y = startY; y < Math.min(bgItems.getHeight(), endY); y++) {
+						glDrawSprite(gl,bgItems.getTile(x, y).getImage(), 
 								x * tileSize[0] - cam.getX(),
 								y * tileSize[1] - cam.getY(), 
 								tileSize[0], 
