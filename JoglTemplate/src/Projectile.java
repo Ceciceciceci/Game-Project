@@ -21,12 +21,12 @@ public class Projectile {
 		this.height = height;
 		this.isShot = isShot;
 		if(isShot != true){
-			speed = 1;
+			speed = 2;
 			this.x = x;
 			this.y = y;
 		} 
 		else{
-			speed = -1;
+			speed = -2;
 			this.x = x - width;
 			this.y = y;
 		} 

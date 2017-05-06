@@ -3,36 +3,42 @@
 public class Background{
     int width;
     int height;
+    private Tile[] tiles;
 	private Tile[][] bg;
-    int pixelStart;
-    int pixelEnd;
 	
-    public Background(int image, boolean collision, int width, int height){
-    	this.width = width;
-    	this.height = height;
-		bg = new Tile[height][width]; // set width and height of Tile
-		for (int y = 0; y < width; y++) {
-			for (int x = 0; x < height; x++){
-				bg[y][x] = new Tile(image, collision); //set bg to this tile in the array 
-			}
-		}	
-    }
-    
-    public void setWidth(int width){
-    	this.width = width;
-    }
+	public Background(Tile[] tiles, int width, int height){
+		this.tiles = tiles;
+	}
+
+	public Background(Tile[][] bg){
+		this.bg = bg;
+		this.height = bg.length;
+		int[][] test = new int[][] {{1,1,1},{2,2,2}};
+		System.out.println(test.length);
+	}
+	 
+//    public Background(int image, boolean collision, int width, int height){
+//    	this.width = width;
+//    	this.height = height;
+//		bg = new Tile[height][width];
+//		for (int y = 0; y < height; y++) {
+//			for (int x = 0; x < width; x++){
+//				bg[y][x] = new Tile(image, collision); 
+//			}
+//		}	
+//    }
+
     public int getWidth(){
     	return width;
-    }
-    
-    public void setHeight(int height){
-    	this.height = height;
     }
     public int getHeight(){
     	return height;
     }
     
     public Tile getTile(int x, int y) {
-	    return bg[y][x];
+	    return tiles[(y*width)+x];
+    }
+    public Tile setTile(int posY, int posX, Tile t) {
+	    return bg[posY][posX] = t;
     }
 }

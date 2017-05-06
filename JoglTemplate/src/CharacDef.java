@@ -15,13 +15,8 @@ public class CharacDef {
 	private boolean reverse = false;
 	private boolean visible = true;
 	
-	private boolean isShooting = false;
-	private boolean isShot = false;
-	private boolean isWalking = false;
-	private boolean isStanding = false; 
-	private boolean isJumping = false;
-	private boolean isGrounded = false;
-	private boolean isDead = false;
+	private boolean isShooting, isShot, isDead = false;
+	private boolean isWalking, isStanding, isJumping, isGrounded= false;
  
 	public CharacDef (int x, int y, int height, int width, int spriteTex){
 		this.x = x;
@@ -29,12 +24,14 @@ public class CharacDef {
 		this.height = height;
 		this.width = width;
 		tex = spriteTex;
-		
+        yVelocity = 0.0;
+        isGrounded = false;
 		projectiles = new ArrayList<Projectile>();
 		charaHitBox = new AABBbox(x, y, width, height);
-		this.health= 10;
+		health= 10;
 		isShooting = false;
 		isShot = false;
+		isDead = false;
 		boxOffset = 0;
 	}
 	
@@ -119,11 +116,6 @@ public class CharacDef {
 	     return true;
 	    	
 	 }
-	 
-	 
-	//jumping state
-	//walking state
-	//standing state
 	
 	//SHOOT PART
 	//collision box AABB
@@ -143,6 +135,10 @@ public class CharacDef {
 	 }
 	 public int getHealth(){
 		 return health;
+	 }
+	 
+	 public double updateyvelocity() {
+	     return yVelocity;
 	 }
 	 
 	 public void setShooting(boolean isShooting) {
