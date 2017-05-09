@@ -13,8 +13,6 @@ public class Background{
 	public Background(Tile[][] bg){
 		this.bg = bg;
 		this.height = bg.length;
-		int[][] test = new int[][] {{1,1,1},{2,2,2}};
-		System.out.println(test.length);
 	}
 	 
 //    public Background(int image, boolean collision, int width, int height){

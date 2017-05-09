@@ -19,8 +19,6 @@ public class Tile {
 		this.image = image;
 		this.imageSize = textureSize;
 		collision = c;
-		xOffset = 0;
-		yOffset = 0;
 	}
 	
 	public int getImage() {
