@@ -2,14 +2,15 @@
 //set bounding box
 public class AABBbox{
 
-	private int x, y, height, width;
+	private double x, y;
+	private int height, width;
 	private int topOver, bottomOver,leftOver,rightOver;
-	public AABBbox(int x, int y, int width, int height) {
+	public AABBbox(double x, double y, int width, int height) {
 		this.x = x;
 		this.y = y;
 		this.height = height;
 		this.width = width;
-		topOver = bottomOver =leftOver =rightOver = 0;
+//		topOver = bottomOver =leftOver =rightOver = 0;
 	}
 	
 	public AABBbox (int x, int y){
@@ -21,7 +22,7 @@ public class AABBbox{
 	public void setX(int x){
 		this.x = x;
 	}
-	public int getX(){
+	public double getX(){
 		return x;
 	}
 	
@@ -29,7 +30,7 @@ public class AABBbox{
 	public void setY(int y){
 		this.y = y;
 	}
-	public int getY(){
+	public double getY(){
 		return y;
 	}
 	

@@ -3,8 +3,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CharacDef {
-	private int x, y, height, width, tex;	
-	
+	private double x, y; 
+	private int height, width, tex;	
+	//character x pos, y pos, height, width of texture, texture
 	private double yVelocity, acceleration, speed;
 	private ArrayList<Projectile> projectiles;
 	private int health = 0;
@@ -28,7 +29,7 @@ public class CharacDef {
         isGrounded = false;
 		projectiles = new ArrayList<Projectile>();
 		charaHitBox = new AABBbox(x, y, width, height);
-		health= 10;
+		health = 5;
 		isShooting = false;
 		isShot = false;
 		isDead = false;
@@ -49,22 +50,30 @@ public class CharacDef {
 		return width;
 	}
 	
-	public void setX(int x){
+	public void setX(double x){
 		this.x = x;
-		charaHitBox.setX(x + boxOffset);
+		charaHitBox.setX((int) (x + boxOffset));
 	}
-	public int getX(){
+	public double getX(){
 		return x;
 	}
 	
-	public void setY(int y){
+	public void setY(double y){
 		this.y = y;
-		charaHitBox.setY(y);
+		charaHitBox.setY((int) y);
 	}
-	public int getY() {
+	public double getY() {
 		return y;
 	}
 	 
+	 
+	 public int getCurrentTexture() {
+		 return tex;
+	 }
+
+	 public void setCurrentTexture(int tex) {
+		 this.tex = tex;
+	 }
 	 public void setAcceleration(double accel){
 		 acceleration = accel;
 	 }
@@ -86,14 +95,6 @@ public class CharacDef {
 
 	 public void setyVelocity(double yVelocity) {
 		 this.yVelocity = yVelocity;
-	 }
-	 
-	 public int getCurrentTexture() {
-		 return tex;
-	 }
-
-	 public void setCurrentTexture(int tex) {
-		 this.tex = tex;
 	 }
 	 
 	 public boolean getReverse() {

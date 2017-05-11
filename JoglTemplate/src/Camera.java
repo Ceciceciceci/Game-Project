@@ -2,7 +2,8 @@
 //Camera class
 //cam xpos and ypos -->  based on left corner
 public class Camera {
-    public int x, y;
+    public int x;
+	public int y;
     public int width;
     public int height;
     private AABBbox box;

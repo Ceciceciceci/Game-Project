@@ -1,7 +1,7 @@
 
 public class Projectile {
-	private int x;
-	private int y;
+	private double x;
+	private double y;
 	private int height;
 	private int width;
 	private int speed; 
@@ -35,14 +35,14 @@ public class Projectile {
 		collisionBox = new AABBbox(x, y, width, height);
 	}
 	
-	public int getX() {
+	public double getX() {
 		return x;
 	}
 	public void setX(int x) {
 		this.x = x;
 	}
 
-	public int getY() {
+	public double getY() {
 		return y;
 	}
 	public void setY(int y) {
@@ -77,12 +77,12 @@ public class Projectile {
 		if(this.isShot()){
 			y += speed;
 			distance += speed;
-			collisionBox.setY(y);
+			collisionBox.setY((int) y);
 		}
 		else{
 			x += speed;
 			distance += speed;
-			collisionBox.setX(x);
+			collisionBox.setX((int) x);
 		}
 	}
 }

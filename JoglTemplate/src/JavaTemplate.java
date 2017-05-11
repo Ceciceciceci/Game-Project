@@ -10,6 +10,7 @@ import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLException;
 import com.jogamp.opengl.GLProfile;
 
+
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -35,40 +36,18 @@ public class JavaTemplate {
     private static boolean kbState[] = new boolean[256];
 
     // Position of the sprite.
-    private static int[] spritePos = new int[] {200, 50};
+    private static int[] spritePos = new int[] {150, 150};
     private static int[] enemyPos = new int[] {spritePos[0]-50, spritePos[1]-50};
-    
-    //follow variables
-	static int enemySpeed = 3; //set enemy speed
-	
-    //atan2()
-	static double target_direction = atan2(spritePos[1] - enemyPos[1], spritePos[0] - spritePos[0]);
+   
 
-	// Initialize texture variables for sprite, bg, projectile.
+	// Initialize texture variables for sprite, projectile.
     private static int spriteTex,
 				       enemyTex;
-    
-    private static int bgTile, 
-    				   bgTile2,
-    				   bgTile3,
-    				   projectile;
-//					   tableTile1,
-//					   tableTile2,
-//					   tableTile3,
-//					   tableTile4;
-    
-    private static int projTile;
+    private static int projectile;
     
     //initialize background
-    private static Tile[][] floorTiles;
+    private static Tile[][] floorWallTiles;
     private static Tile[][] tableTiles;
-    private static Tile[][] backgroundLevelTiles;
-    
-    private static Background bgMain, 
-    						  bgObjects,
-    						  bgLevel;
-    
-//    private static BackgroundTiles bgTiles;  
     private static ArrayList<Tile> tiles = new ArrayList<Tile>();
     	
     // Size of the sprite/tiles/projectiles
@@ -80,14 +59,10 @@ public class JavaTemplate {
     //Size of window size
     private static int windowWidth = 400;
     private static int windowHeight = 400;
-   
-    //How big the grid is in the background in tiles.
-//    private static int gridHeight = 15;
-//    private static int gridWidth = 35;
     
     //size of the game play
     private static int worldHeight = 15; 
-    private static int worldWidth = 50;
+    private static int worldWidth = 80;
     
     //initialize camera
     private static Camera cam = new Camera(0,0);
@@ -156,115 +131,110 @@ public class JavaTemplate {
 		
 		//for the main character
         FrameDef[] walking= { 
-			new FrameDef(glTexImageTGAFile(gl, "2.tga", spriteSize), (float) 1 ),
-			new FrameDef(glTexImageTGAFile(gl, "3.tga", spriteSize), (float) 1 ),				
-			new FrameDef(glTexImageTGAFile(gl, "4.tga", spriteSize), (float) 1 ),
-			new FrameDef(glTexImageTGAFile(gl, "5.tga", spriteSize), (float) 1 ),
-			new FrameDef(glTexImageTGAFile(gl, "6.tga", spriteSize), (float) 1 ),
-			new FrameDef(glTexImageTGAFile(gl, "7.tga", spriteSize), (float) 1 ),
-			new FrameDef(glTexImageTGAFile(gl, "8.tga", spriteSize), (float) 1 )
+			new FrameDef(glTexImageTGAFile(gl, "2.tga", spriteSize), (float) 2 ),
+			new FrameDef(glTexImageTGAFile(gl, "3.tga", spriteSize), (float) 2 ),				
+			new FrameDef(glTexImageTGAFile(gl, "4.tga", spriteSize), (float) 2 ),
+			new FrameDef(glTexImageTGAFile(gl, "5.tga", spriteSize), (float) 2 ),
+			new FrameDef(glTexImageTGAFile(gl, "6.tga", spriteSize), (float) 2 ),
+			new FrameDef(glTexImageTGAFile(gl, "7.tga", spriteSize), (float) 2 ),
+			new FrameDef(glTexImageTGAFile(gl, "8.tga", spriteSize), (float) 2 )
         };
         FrameDef[] walkingLeft= { 
-			new FrameDef(glTexImageTGAFile(gl, "2.tga", spriteSize), (float) 1 ),
-			new FrameDef(glTexImageTGAFile(gl, "3.tga", spriteSize), (float) 1 ),				
-			new FrameDef(glTexImageTGAFile(gl, "4.tga", spriteSize), (float) 1 ),
-			new FrameDef(glTexImageTGAFile(gl, "5.tga", spriteSize), (float) 1 ),
-			new FrameDef(glTexImageTGAFile(gl, "6.tga", spriteSize), (float) 1 ),
-			new FrameDef(glTexImageTGAFile(gl, "7.tga", spriteSize), (float) 1 ),
-			new FrameDef(glTexImageTGAFile(gl, "8.tga", spriteSize), (float) 1 )
+			new FrameDef(glTexImageTGAFile(gl, "28.tga", spriteSize), (float) 2 ),
+			new FrameDef(glTexImageTGAFile(gl, "29.tga", spriteSize), (float) 2 ),				
+			new FrameDef(glTexImageTGAFile(gl, "30.tga", spriteSize), (float) 2 ),
+			new FrameDef(glTexImageTGAFile(gl, "31.tga", spriteSize), (float) 2 ),
+			new FrameDef(glTexImageTGAFile(gl, "32.tga", spriteSize), (float) 2 ),
+			new FrameDef(glTexImageTGAFile(gl, "33.tga", spriteSize), (float) 2 ),
+			new FrameDef(glTexImageTGAFile(gl, "34.tga", spriteSize), (float) 2 ),
+			new FrameDef(glTexImageTGAFile(gl, "35.tga", spriteSize), (float) 2 )
         };
+        //jumping
+//        FrameDef[] jumping= { 
+//			new FrameDef(glTexImageTGAFile(gl, "4.tga", spriteSize), (float) 1 ),
+//			new FrameDef(glTexImageTGAFile(gl, "4.tga", spriteSize), (float) 1 ),				
+//			new FrameDef(glTexImageTGAFile(gl, "4.tga", spriteSize), (float) 1 ),
+//			new FrameDef(glTexImageTGAFile(gl, "4.tga", spriteSize), (float) 1 ),
+//			new FrameDef(glTexImageTGAFile(gl, "4.tga", spriteSize), (float) 1 ),
+//			new FrameDef(glTexImageTGAFile(gl, "4.tga", spriteSize), (float) 1 ),
+//			new FrameDef(glTexImageTGAFile(gl, "4.tga", spriteSize), (float) 1 )
+//        };
         
+        //for enemy
         FrameDef[] enemyWalking= { 
-			new FrameDef(glTexImageTGAFile(gl, "2.tga", spriteSize), (float) 1 ),
-			new FrameDef(glTexImageTGAFile(gl, "3.tga", spriteSize), (float) 1 ),				
-			new FrameDef(glTexImageTGAFile(gl, "4.tga", spriteSize), (float) 1 ),
-			new FrameDef(glTexImageTGAFile(gl, "5.tga", spriteSize), (float) 1 ),
-			new FrameDef(glTexImageTGAFile(gl, "6.tga", spriteSize), (float) 1 ),
-			new FrameDef(glTexImageTGAFile(gl, "7.tga", spriteSize), (float) 1 ),
-			new FrameDef(glTexImageTGAFile(gl, "8.tga", spriteSize), (float) 1 )
+			new FrameDef(glTexImageTGAFile(gl, "20.tga", enemySize), (float) 80 ),
+			new FrameDef(glTexImageTGAFile(gl, "21.tga", enemySize), (float) 80 ),				
+			new FrameDef(glTexImageTGAFile(gl, "22.tga", enemySize), (float) 80 ),
+			new FrameDef(glTexImageTGAFile(gl, "23.tga", enemySize), (float) 80 ),
+			new FrameDef(glTexImageTGAFile(gl, "22.tga", enemySize), (float) 80 ),
+			new FrameDef(glTexImageTGAFile(gl, "21.tga", enemySize), (float) 80 ),
+			new FrameDef(glTexImageTGAFile(gl, "20.tga", enemySize), (float) 80 )
+        };
+        FrameDef[] enemyWalkingRight= { 
+			new FrameDef(glTexImageTGAFile(gl, "24.tga", enemySize), (float) 80 ),
+			new FrameDef(glTexImageTGAFile(gl, "25.tga", enemySize), (float) 80 ),				
+			new FrameDef(glTexImageTGAFile(gl, "26.tga", enemySize), (float) 80 ),
+			new FrameDef(glTexImageTGAFile(gl, "27.tga", enemySize), (float) 80 ),
+			new FrameDef(glTexImageTGAFile(gl, "26.tga", enemySize), (float) 80 ),
+			new FrameDef(glTexImageTGAFile(gl, "25.tga", enemySize), (float) 80 ),
+			new FrameDef(glTexImageTGAFile(gl, "24.tga", enemySize), (float) 80 )
         };
         
-//
-        FrameDef[] jumping= { 
-			new FrameDef(glTexImageTGAFile(gl, "4.tga", spriteSize), (float) 1 ),
-			new FrameDef(glTexImageTGAFile(gl, "4.tga", spriteSize), (float) 1 ),				
-			new FrameDef(glTexImageTGAFile(gl, "4.tga", spriteSize), (float) 1 ),
-			new FrameDef(glTexImageTGAFile(gl, "4.tga", spriteSize), (float) 1 ),
-			new FrameDef(glTexImageTGAFile(gl, "4.tga", spriteSize), (float) 1 ),
-			new FrameDef(glTexImageTGAFile(gl, "4.tga", spriteSize), (float) 1 ),
-			new FrameDef(glTexImageTGAFile(gl, "4.tga", spriteSize), (float) 1 )
-        };
-        
-        
-        //enemy animation
-        
+
 		FrameAnimation walkAni = new FrameAnimation(walking);
 		FrameAnimation walkAniLeft = new FrameAnimation(walkingLeft);
-		FrameAnimation jumpingAni = new FrameAnimation(jumping);
+//		FrameAnimation jumpingAni = new FrameAnimation(jumping);
 		FrameAnimation walkAniEnemy = new FrameAnimation(enemyWalking);
+		FrameAnimation walkAniEnemyRight = new FrameAnimation(enemyWalkingRight);
 		
 		
 		/*************BACKGROUND TEXTURES*************/
-		bgTile = glTexImageTGAFile(gl, "10.tga",tileSize); //wall tile
-//		bgTile2 = glTexImageTGAFile(gl, "11.tga", tileSize); //floor tile
-//		//invisible tile
-//		tableTile1 = glTexImageTGAFile(gl, "12.tga", tileSize);
-//		tableTile2 = glTexImageTGAFile(gl, "13.tga", tileSize);
-//		tableTile3 = glTexImageTGAFile(gl, "14.tga", tileSize);
-//		tableTile4 = glTexImageTGAFile(gl, "15.tga", tileSize);
-		
-		//the walls
-			String filename = "10.tga";
-			tiles.add(new Tile(bgTile, filename, tileSize, false));
-			System.out.println(filename);
-			System.out.println(tiles + " \n");
+		System.out.println(tiles + " \n");
 	
-//		//floor tile!!
-//		tiles.add(new Tile(glTexImageTGAFile(gl,"background\\bgmain\\11.tga", tileSize), "11",tileSize, false));
-//        Tile[][] floorBG = new Tile[80][80];
-//        for (int y = 0; y < 80; y++) {
-//            for (int x = 0; x < 80; x++) {
-//                floorBG[y][x] = tiles.get(10);
-//            }
-//        }
-//		
-//	
-
+		for (int y = 10; y < 13; y++){
+			String filename = y + ".tga";
+			if (y == 11){
+				tiles.add(new Tile(glTexImageTGAFile(gl, filename, tileSize), filename, tileSize, true));
+			}
+			else{
+				tiles.add(new Tile(glTexImageTGAFile(gl, filename, tileSize), filename, tileSize, false));
+			}
+		}
 		
-//		bgMain1 = new Tile(bgTile, true); //main purple floor tile
-//		bgMain = new Background(bgTile, true, gridWidth, gridHeight);
-//		bgObjects = new Background(tableTile1, true, 5,5)
+		for (int y = 13; y < 18; y++){
+			String filename2 = y + ".tga";
+			if (y == 13 || y == 14 || y == 15 || y ==16){
+				tiles.add(new Tile(glTexImageTGAFile(gl, filename2, tileSize), filename2, tileSize, true));
+			}
+			else{
+				tiles.add(new Tile(glTexImageTGAFile(gl, filename2, tileSize), filename2, tileSize, false));
+			}
+		}
+		
 	    loadBG();
 	        
-	   
-		
 		/***************** SOUNDS *****************/
 		
 		
 		/************** PROJECTILE*****************/
 		projectile = glTexImageTGAFile(gl, "projectile.tga", projectileSize);
+	    
 		
-	    //size of the world 
-//	    worldHeight = gridHeight * tileSize[0];
-//	    worldWidth = gridWidth * tileSize[1];
-	     cam.width = windowWidth; 
-	     cam.height = windowHeight;
-	     
-		/*************AABB bounding box****************/
+		/**************ARRAY OF ENEMIES****************/
+		ArrayList<CharacDef> enemies = new ArrayList<CharacDef>();
+		enemies.add(new Enemy(enemyPos[0] + 100, enemyPos[1]+200, enemySize[0], enemySize[1], enemyTex));
+		enemies.add(new Enemy(enemyPos[0] + 300, enemyPos[1]+200, enemySize[0], enemySize[1], enemyTex));
+		enemies.add(new Enemy(enemyPos[0] + 500, enemyPos[1]+200, enemySize[0], enemySize[1], enemyTex));
+		
+		/*************AABB BOUNDING BOX****************/
+	    cam.width = windowWidth; 
+	    cam.height = windowHeight;
+	    
 	    cam.getAABBIntersection().setHeight(windowHeight);
 	    cam.getAABBIntersection().setWidth(windowHeight);
-	    AABBbox  tileBox;
+	    AABBbox tileBox;
 		AABBbox spriteBox;
-//		AABBbox cameraBox;
-		spriteBox = new AABBbox (chara.getX(), chara.getY(), chara.getWidth(), chara.getHeight());
-//		cameraBox = new AABBbox (cam.getX(), cam.getY(), windowHeight, windowWidth);
-		
-		
-		/***Array of enemies***/
-		ArrayList<CharacDef> enemies = new ArrayList<CharacDef>();
-		enemies.add(new Enemy(enemyPos[0] + 200, enemyPos[1], enemySize[0], enemySize[1], enemyTex));
-		enemies.add(new Enemy(enemyPos[0] + 15, enemyPos[1]+100, enemySize[0], enemySize[1], enemyTex));
-		enemies.add(new Enemy(enemyPos[0] + 100, enemyPos[1]+300, enemySize[0], enemySize[1], enemyTex));
+		AABBbox enemyBox;
 		
 		///////////////////////////////////////////////
 		//Frame and Time variables
@@ -272,7 +242,7 @@ public class JavaTemplate {
 		// Physics Time Frames
 		long lastPhysicsFrameMS = 0;
 		long curFrameMS = 0;
-		int physicsDeltaMS = 10;
+		double physicsDeltaMS = 0.1;
 		
 		//Regular Time Frames
         long lastFrameNS;
@@ -300,11 +270,12 @@ public class JavaTemplate {
             int down = KeyEvent.VK_DOWN;
 
         	/********PHYSICS UPDATE********/
+
             do{
-            	if (chara.isGrounded()){
-            		chara.setyVelocity(0);
-            	}
-            	for (int i = 0; i < chara.getProjectile().size(); i++) {
+               if (chara.isGrounded()){
+            	    chara.setyVelocity(0);
+               }
+               for (int i = 0; i < chara.getProjectile().size(); i++) {
 					ArrayList<Projectile> projectile1 = (ArrayList<Projectile>) chara.getProjectile();
 					Projectile p = projectile1.get(i);
 					p.setUpdate();
@@ -323,29 +294,95 @@ public class JavaTemplate {
 							}
 						}
 					}
-            	 }
+            	}
             	
-     		   //collision for bg
-//    			int startX = (int) Math.floor(chara.getX() / tileSize[0]);
-//    			int endX = (int)Math.ceil((chara.getX() + windowWidth)/ tileSize[0]);
-//    			int startY = (int) Math.floor(chara.getY()/ tileSize[1]);
-//    			int endY = (int)Math.ceil((chara.getY() + windowHeight)/ tileSize[1]);
-//    			for (int x = startX; x < endX; x++){
-//    				for(int y = startY; y < endY; y++){
-//    					if (floorTiles[y][x].isCollision()){
-//                            tileBox = new AABBbox(x * tileSize[0], y * tileSize[1], tileSize[0], tileSize[1]);
-//    					}
-//    					
-//    				}
-//    			}
+    			int charaTileX = (int) Math.floor(chara.getX() / tileSize[0]);
+    			int charaTileY = (int) Math.floor(chara.getY()/ tileSize[1]);
+    			for (int x = Math.max(charaTileX-1, 0); x <= Math.min((charaTileX+1), 79); x++){
+    				for(int y = Math.max(charaTileY-1, 0); y <= Math.min((charaTileY+1), 15); y++){
+    					if (floorWallTiles[y][x].isCollision() || tableTiles[y][x].isCollision()){
+                            tileBox = new AABBbox(x * tileSize[0], y * tileSize[1], tileSize[0], tileSize[1]);
+                            spriteBox = new AABBbox (chara.getX(), chara.getY(), chara.getWidth(), chara.getHeight());
+                              
+                            while (AABBbox.AABBIntersect(tileBox, spriteBox)){
+                            	spriteBox = new AABBbox (chara.getX(), chara.getY(), chara.getWidth(), chara.getHeight());
+            					System.out.println("spirte and tile collision : " + AABBbox.AABBIntersect(tileBox, spriteBox));
+            					if (x < tileBox.getX() && x < tileBox.getX() + tileBox.getWidth()){
+	                            	if(tileBox.getX() > chara.getX()){
+	                            		 chara.setX((int) (chara.getX()-1));
+	                            	}
+	                            	if(tileBox.getX() < chara.getX()){
+	                           		 	chara.setX((int) (chara.getX()+1));
+	                            	}
+            					}
+            					if (y < tileBox.getY() && y < tileBox.getY() + tileBox.getHeight()){
+	                            	if(tileBox.getY() > chara.getY()){
+	                              		 chara.setY((int) (chara.getY()-1)); 
+	                               	}
+	                            	if(tileBox.getY() < chara.getY()){
+	                             		 chara.setY((int) (chara.getY()+1));
+	                              	}
+            					}
+                            }
+                            spriteBox = new AABBbox (chara.getX(), chara.getY(), chara.getWidth(), chara.getHeight());
+                           
+    					}
+    					
+    				}
+    			}
     			
-            	
-            	//if chara is jumping and shot --> health
+    		    //atan2() //enemy sprite follow
+    			double target_direction;
+    			for (CharacDef ene : enemies) {
+    				target_direction = atan2(chara.getY() - ene.getY(), chara.getX() - ene.getX());
+    				ene.setX( (ene.getX() + (Math.cos(target_direction))));
+    				ene.setY( (ene.getY() + (Math.sin(target_direction))));
+    				if (chara.getX() > ene.getX()){
+    					walkAniEnemyRight.updateSprite(4);	
+    					ene.setCurrentTexture(walkAniEnemyRight.getCurrentFrame());
+    				}
+    				else{
+    					walkAniEnemy.updateSprite(4);
+    					ene.setCurrentTexture(walkAniEnemy.getCurrentFrame());
+    				}
+    				
+
+        			int enemyTileX = (int) Math.floor(ene.getX() / tileSize[0]);
+        			int enemyTileY = (int) Math.floor(ene.getY()/ tileSize[1]);
+        			for (int x = Math.max(enemyTileX-1, 0); x <= Math.min((enemyTileX+1), 79); x++){
+        				for(int y = Math.max(enemyTileY-1, 0); y <= Math.min((enemyTileY+1), 15); y++){
+		    				enemyBox = new AABBbox(ene.getX(), ene.getY(), ene.getWidth(), ene.getHeight());
+		                    tileBox = new AABBbox(x * tileSize[0], y * tileSize[1], tileSize[0], tileSize[1]);
+		    				while (AABBbox.AABBIntersect(tileBox, enemyBox)){
+		                    	enemyBox = new AABBbox(ene.getX(), ene.getY(), ene.getWidth(), ene.getHeight());
+		    					System.out.println("enemy and tile collision : " + AABBbox.AABBIntersect(tileBox, enemyBox));
+		    					if (x < tileBox.getX() && x < tileBox.getX() + tileBox.getWidth()){
+		                        	if(tileBox.getX() > ene.getX()){
+		                        		ene.setX((int) (ene.getX()-1));
+		                        	}
+		                        	if(tileBox.getX() < ene.getX()){
+		                        		ene.setX((int) (ene.getX()+1));
+		                        	}
+		    					}
+		    					if (y < tileBox.getY() && y < tileBox.getY() + tileBox.getHeight()){
+		                        	if(tileBox.getY() > ene.getY()){
+		                        		ene.setY((int) (ene.getY()-1)); 
+		                           	}
+		                        	if(tileBox.getY() < ene.getY()){
+		                        		ene.setY((int) (ene.getY()+1));
+		                          	}
+		    					}
+		                    }
+        				}
+        			}
+    			}
+    		
+          
                 physicsDeltaMS = 1000;
             	lastPhysicsFrameMS += physicsDeltaMS;
             }
           	while (lastPhysicsFrameMS + physicsDeltaMS < curFrameMS );
-            
+    			
             
 		/************************************************************************/        
 		/*********************** Game logic goes here.***************************/
@@ -357,8 +394,8 @@ public class JavaTemplate {
             /***************KEYBOARD STATES****************/
             if (kbState[left] == true) {
             	chara.setX((int) (chara.getX() - deltaTimeMS * 0.5));
-	        	walkAni.updateSprite(deltaTimeMS);
-				chara.setCurrentTexture(walkAni.getCurrentFrame());
+            	walkAniLeft.updateSprite(deltaTimeMS);
+				chara.setCurrentTexture(walkAniLeft.getCurrentFrame());
 	        }
 	        
 	        if (kbState[right] == true) {
@@ -369,9 +406,8 @@ public class JavaTemplate {
 	        
 	        if (kbState[up] == true) {
 	        	chara.setY((int) (chara.getY() - deltaTimeMS * 0.5));
-	        	walkAni.updateSprite(deltaTimeMS);
-	        	chara.setCurrentTexture(walkAni.getCurrentFrame());
-				chara.setReverse(true);
+	        	walkAniLeft.updateSprite(deltaTimeMS);
+	        	chara.setCurrentTexture(walkAniLeft.getCurrentFrame());
 	        }
 	        
 	        if (kbState[down] == true) {
@@ -384,7 +420,8 @@ public class JavaTemplate {
 	        if (chara.getX() < 0){
 	        	chara.setX(0);}
 	        if (chara.getX() >= worldWidth * tileSize[0] - spriteSize[0]){
-	        	chara.setX(worldWidth* tileSize[0] - spriteSize[0]);}
+	        	chara.setX(worldWidth*tileSize[0] - spriteSize[0]);
+	        	System.out.println(chara.getX());}
 	        if (chara.getY() < 0) {
 	        	chara.setY(0);}
 	        if (chara.getY() >= worldHeight*tileSize[1] - spriteSize[1]){
@@ -393,140 +430,69 @@ public class JavaTemplate {
 	         
 	        
 	        if (kbState[KeyEvent.VK_SPACE] == true){
-	        	chara.addProjectile(new Projectile(chara.getX() + 50, chara.getY(), projectileSize[0],
+	        	chara.addProjectile(new Projectile((int)chara.getX() + 40, (int)chara.getY(), projectileSize[0],
 						projectileSize[1], false));
 	        	chara.setShooting(false);
 	        }
 	        
-//        	if (chara.isGrounded()== true && kbState[KeyEvent.VK_W]){
-//    			chara.setAcceleration(5);
-	//    	}
-	//    	if (chara.isGrounded()) { 
-	//    		int yVelocity = 0; int jumpVelocity = 4; int yPos; int gravity = 1;
-	//    		if (chara.isGrounded() && kbState[KeyEvent.VK_W])
-	//    		yVelocity = jumpVelocity;
-	//    		yPos = (int) (chara.getY() + yVelocity * deltaTimeMS);
-	//    		yVelocity = (int) (yVelocity + gravity * deltaTimeMS);
-	//    	}
-	        
-//	        double zVelocity = chara.getyVelocity();
-//	        double zSpeed= 10;
-//	        double zHeight = 0;
-//	        double zPosition = chara.getY();
-//	        double yPosition = chara.getY();
-//	        double yVelocity = chara.getyVelocity();
-//	        double gravity = 0.1;
-//
-//	        
-//	        if (zPosition <= 0){
-//	        	zSpeed = 0;
-//	        	zPosition = 0;
-//	        }
-//	        if (kbState[KeyEvent.VK_W] == true && !chara.isJumping()){
-//	        	
-//	        	zSpeed = 10;
-//	        }
-//	        zPosition += zSpeed;
-//	        zSpeed -= gravity;
-	        
-	        
- 
-
 	        /****************CAMERA STUFF*****************/	        
-	        //cam.x = spritePos[0] - (cam.width/2);
-	        //cam.y = spritePos[1] - (cam.height/2);
-	        cam.x = chara.getX() - (cam.width/2);
-	        cam.y = chara.getY() - (cam.height/2);
-	      
-	        
+	        cam.x = (int)chara.getX() - (cam.width/2);
+	        cam.y = (int)chara.getY() - (cam.height/2);
+	     
 			if (cam.x < 0) {cam.setX(0);}
 			if (cam.y < 0) {cam.setY(0);}
-			if (cam.x > worldWidth) {cam.setX(worldWidth * tileSize[0] - cam.width);}
-			if (cam.y > worldHeight) {cam.setY(worldHeight * tileSize[1] - cam.height);}
-		
-	        
-	        //set up AABB box stuff between the camera and sprite
-			//need collision resolution AABBbox
-			spriteBox.setX(spritePos[0]);
-			spriteBox.setY(spritePos[1]);
-			spriteBox.setWidth(spriteSize[0]);
-			spriteBox.setHeight(spriteSize[1]);
-
-//			cameraBox.setX(cam.getX());
-//			cameraBox.setY(cam.getY());
-//			cameraBox.setWidth(windowWidth);
-//			cameraBox.setHeight(windowHeight);
+			if (cam.x > worldWidth * tileSize[0] - cam.width) {cam.setX(worldWidth * tileSize[0] - cam.width);}
+			if (cam.y > worldHeight * tileSize[1] - cam.height) {cam.setY(worldHeight * tileSize[1] - cam.height);}
 		    
-	        //enemy sprite follow
-		    if (enemyPos[0] > chara.getX() + 20){
-		    	enemyPos[0] -= target_direction * 3;
-		    }
-		    if (enemyPos[0] < chara.getX() - 20){
-		    	enemyPos[0] += target_direction * 3;
-		    }
-		    if (enemyPos[1] > chara.getY() + 20){
-		    	enemyPos[1] -= target_direction * 3;
-		    }
-		    if (enemyPos[1] < chara.getY() - 20){
-		    	enemyPos[1] += target_direction * 3;
-		    }
 			
             /*****************************************************************
              *************************DRAW SPRITES****************************
              *****************************************************************/
 			gl.glClearColor(0, 0, 0, 1);
-            gl.glClear(GL2.GL_COLOR_BUFFER_BIT);
- 		   //check if bg is in bounds w/in camera
- 			int startX = (int) Math.floor(cam.x / tileSize[0]);
- 			int endX = (int)Math.ceil(cam.x+ windowWidth  / tileSize[0]);
- 			int startY = (int) Math.floor(cam.y / tileSize[1]);
- 			int endY = (int)Math.ceil(cam.y+ windowHeight / tileSize[1]);
-			            
+            gl.glClear(GL2.GL_COLOR_BUFFER_BIT);         
             
             //DRAW THE BACKGROUND
-//			for (int x = startX; x < Math.min(bgMain.getWidth(), endX); x++) {
-//				for (int y = startY; y < Math.min(bgMain.getHeight(), endY); y++) {
-//						glDrawSprite(gl,bgMain.getTile(x, y).getImage(), 
-//								x * tileSize[0] - cam.getX(),
-//								y * tileSize[1] - cam.getY(), 
-//								tileSize[0], 
-//								tileSize[1]);
-//				}
-//			} 
-		
-           for (int x = 0; x < 80; x++) {
+            for (int x = 0; x < 80; x++) {
                 for (int y = 0; y < 15; y++) {
-                    glDrawSprite(gl, floorTiles[y][x].image, (x * tileSize[0]) - cam.getX(), (y * tileSize[1]) - cam.getY(), tileSize[0], tileSize[1]);
-//                	glDrawSprite(gl, floorTiles[y][x].image, x, y, tileSize[0], tileSize[1]);
+                   glDrawSprite(gl, floorWallTiles[y][x].image, (x * tileSize[0]) - cam.getX(), (y * tileSize[1]) - cam.getY(), tileSize[0], tileSize[1]);
                 
                 }
-           }
-			
+            }
+					//tables
+            for (int x = 0; x < 80; x++) {
+               for (int y = 0; y < 15; y++) {
+                   glDrawSprite(gl, tableTiles[y][x].image, (x * tileSize[0]) - cam.getX(), (y * tileSize[1]) - cam.getY(), tileSize[0], tileSize[1]);
+               
+               }
+            }
 
 			//DRAW THE PROJECTILE
 			ArrayList<Projectile> charaProjectiles = (ArrayList<Projectile>) chara.getProjectile();
 			for (int i = 0; i < charaProjectiles.size(); i++) {
 				Projectile p = charaProjectiles.get(i);
 				glDrawSprite(gl, projectile, 
-								p.getX() - cam.getX(), 
-								p.getY() - cam.getY(),
+								(int)(p.getX() - cam.getX()), 
+								(int)(p.getY() - cam.getY()),
 								projectileSize[0], 
-								projectileSize[1]);
+								projectileSize[1] );
 			}
 			
 			//DRAW ENEMY SPRITES
 			for (CharacDef e : enemies) {
 				if (e.getVisible()) {
-					if (AABBIntersect(spriteBox, e.charaHitbox())) {
-						glDrawSprite(gl, e.getCurrentTexture(), (e.getX()) - cam.x, (e.getY()) - cam.y,
-								enemySize[0], enemySize[1]);
-					}
+					glDrawSprite(gl, e.getCurrentTexture(), 
+						(int)(e.getX()) - cam.getX(), 
+						(int)(e.getY()) - cam.getY(),
+						enemySize[0], enemySize[1]);
 				}
 			}
 			 
 			
 			//DRAW THE SPRITE
-			glDrawSprite(gl, chara.getCurrentTexture(), chara.getX() - cam.getX(), chara.getY() - cam.getY(), spriteSize[0], spriteSize[1]);	
+			glDrawSprite(gl, chara.getCurrentTexture(), 
+					(int)chara.getX() - cam.getX() + tileSize[0]/4, 
+					(int)chara.getY() - cam.getY()-  tileSize[1]/2, 
+					spriteSize[0], spriteSize[1]);	
         }
     }
 
@@ -555,25 +521,40 @@ public class JavaTemplate {
 	}
     
     public static void loadBG(){
-    	System.out.print("Before: " + floorTiles);
-    	floorTiles = new Tile[][] {
-    		{tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0)},
-    		  {tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0)},
-    		  {tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0)},
-    		  {tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0)},
-    		  {tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0)},
-    		  {tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0)},
-    		  {tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0)},
-    		  {tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0)},
-    		  {tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0)},
-    		  {tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0)},
-    		  {tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0)},
-    		  {tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0)},
-    		  {tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0)},
-    		  {tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0)},
-    		  {tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0)}
-    		};
-    	System.out.print("After: " + floorTiles);
+    	floorWallTiles = new Tile[][] {
+    		{tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1)},
+    		{tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1)},
+    		{tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1)},
+    		{tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(1),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(1),tiles.get(1)},
+    		{tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(1),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(1),tiles.get(1)},
+    		{tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(1),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(1),tiles.get(1)},
+    		{tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(1),tiles.get(1)},
+    		{tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(1),tiles.get(1)},
+    		{tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(1),tiles.get(1)},
+    		{tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(1),tiles.get(1)},
+    		{tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(1),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(1),tiles.get(1)},
+    		{tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(1),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(1),tiles.get(1)},
+    		{tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(1),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1)},
+    		{tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(1),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(0),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1)},
+    		{tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1),tiles.get(1)}
+        };
+    	tableTiles = new Tile[][]{
+    		{tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7)},
+    		{tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7)},
+    		{tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7)},
+    		{tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7)},
+    		{tiles.get(7),tiles.get(3),tiles.get(4),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7)},
+    		{tiles.get(7),tiles.get(5),tiles.get(6),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7)},
+    		{tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7)},
+    		{tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7)},
+    		{tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7)},
+    		{tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7)},
+    		{tiles.get(7),tiles.get(3),tiles.get(4),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(3),tiles.get(4),tiles.get(7),tiles.get(7),tiles.get(3),tiles.get(4),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7)},
+    		{tiles.get(7),tiles.get(5),tiles.get(6),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(5),tiles.get(6),tiles.get(7),tiles.get(7),tiles.get(5),tiles.get(6),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7)},
+    		{tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7)},
+    		{tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7)},
+    		{tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7)}
+    	};
     }
     
     // Load a file into an OpenGL texture and return that texture.
