@@ -9,27 +9,26 @@ public class Projectile {
 	private double gravity;
 	
 	private boolean visible;
-	private boolean isShot;	
+	private boolean isRock;	
 	private boolean update;
 	private boolean reverse;
 	private AABBbox collisionBox;
 	
-	public Projectile(int x, int y, int width, int height, boolean isShot){
+	public Projectile(int x, int y, int width, int height, boolean isLeft){
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
-		this.isShot = isShot;
-		if(isShot != true){
-			speed = 2;
+		if(!isLeft){
+			this.speed = 3;
 			this.x = x;
 			this.y = y;
-		} 
+		}
 		else{
-			speed = -2;
+			this.speed = -3;
 			this.x = x - width;
 			this.y = y;
-		} 
+		}
 		this.gravity = 1;
 		this.distance = 0;	
 		collisionBox = new AABBbox(x, y, width, height);
@@ -69,12 +68,24 @@ public class Projectile {
 		visible = visi;
 	}
 	
-	public boolean isShot(){
-		return isShot;
+	public boolean isReverse() {
+		return reverse;
+	}
+
+	public void setReverse(boolean reverse) {
+		this.reverse = reverse;
+	}
+	
+	public boolean isRock() {
+		return isRock;
+	}
+
+	public void setRock(boolean isRock) {
+		this.isRock = isRock;
 	}
 	
 	public void setUpdate(){
-		if(this.isShot()){
+		if(this.isRock()){
 			y += speed;
 			distance += speed;
 			collisionBox.setY((int) y);
