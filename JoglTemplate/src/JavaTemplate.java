@@ -34,7 +34,7 @@ public class JavaTemplate {
     private static boolean kbState[] = new boolean[256];
 
     // Position of the sprite.
-    private static int[] spritePos = new int[] {150, 150};
+    private static int[] spritePos = new int[] {150, 300};
     private static int[] enemyPos = new int[] {spritePos[0]-50, spritePos[1]-50};
    
 
@@ -313,32 +313,36 @@ public class JavaTemplate {
 					}
             	}
             	
-    			int charaTileX = (int) Math.floor(chara.getX() / tileSize[0]);
-    			int charaTileY = (int) Math.floor(chara.getY()/ tileSize[1]);
+    			int charaTileX = (int) Math.floor(chara.getX()/tileSize[0]);
+    			int charaTileY = (int) Math.floor(chara.getY()/tileSize[1]);
     			for (int x = Math.max(charaTileX-1, 0); x <= Math.min((charaTileX+1), 79); x++){
     				for(int y = Math.max(charaTileY-1, 0); y <= Math.min((charaTileY+1), 15); y++){
     					if (floorWallTiles[y][x].isCollision() || tableTiles[y][x].isCollision()){
                             tileBox = new AABBbox(x * tileSize[0], y * tileSize[1], tileSize[0], tileSize[1]);
                             spriteBox = new AABBbox (chara.getX(), chara.getY(), chara.getWidth(), chara.getHeight());
-                              
+                            
                             while (AABBbox.AABBIntersect(tileBox, spriteBox)){
                             	spriteBox = new AABBbox (chara.getX(), chara.getY(), chara.getWidth(), chara.getHeight());
-            					System.out.println("spirte and tile collision : " + AABBbox.AABBIntersect(tileBox, spriteBox));
+            					System.out.println("sprite and tile collision : " + AABBbox.AABBIntersect(tileBox, spriteBox));
             					if (x < tileBox.getX() && x < tileBox.getX() + tileBox.getWidth()){
 	                            	if(tileBox.getX() > chara.getX()){
-	                            		 chara.setX((int) (chara.getX()-1));
+	                            		 chara.setX((chara.getX()-1));
 	                            	}
 	                            	if(tileBox.getX() < chara.getX()){
-	                           		 	chara.setX((int) (chara.getX()+1));
+	                           		 	chara.setX((chara.getX()+1));
+	                           		 	System.out.println(" get x 2 " + chara.getX());
 	                            	}
+	                            	System.out.println(" get x " +chara.getX());
             					}
             					if (y < tileBox.getY() && y < tileBox.getY() + tileBox.getHeight()){
 	                            	if(tileBox.getY() > chara.getY()){
-	                              		 chara.setY((int) (chara.getY()-1)); 
+	                              		 chara.setY((chara.getY()-1)); 
 	                               	}
 	                            	if(tileBox.getY() < chara.getY()){
-	                             		 chara.setY((int) (chara.getY()+1));
+	                             		 chara.setY((chara.getY()+1));
+	                             		System.out.println(" get y 2 " + chara.getY());
 	                              	}
+	                            	System.out.println("get y " + chara.getY());
             					}
                             }
                             spriteBox = new AABBbox (chara.getX(), chara.getY(), chara.getWidth(), chara.getHeight());
@@ -363,13 +367,13 @@ public class JavaTemplate {
 						//collision box projectile
 						AABBbox projectile = enemyProjectiles.get(i).getCollisionBox();
 						if (AABBIntersect(projectile, chara.charaHitbox())) {
-								enemyProjectiles.get(i).setVisible(false);
-								enemyProjectiles.remove(i);
-								chara.setHealth(chara.getHealth() - 1);
-								if(chara.getHealth() < 1){
-									chara.setDead(true);
-								}
-								chara.setHit(!chara.isShot());
+							enemyProjectiles.get(i).setVisible(false);
+							enemyProjectiles.remove(i);
+							chara.setHealth(chara.getHealth() - 1);
+							if(chara.getHealth() < 1){
+								chara.setDead(true);
+							}
+							chara.setHit(!chara.isShot());
 						}
 						
     				} //end of enemy projectiles
@@ -390,6 +394,7 @@ public class JavaTemplate {
     					ene.setCurrentTexture(walkAniEnemy.getCurrentFrame());
     				}
     				
+    				//BDRF = bidirectional radial function
     				//rand on actions
     				//enemy stands still 0 < x < 0.5
         			if (nextRandomFloat < .25 && nextRandomFloat >= 0.0){
@@ -419,32 +424,6 @@ public class JavaTemplate {
 
         			int enemyTileX = (int) Math.floor(ene.getX() / tileSize[0]);
         			int enemyTileY = (int) Math.floor(ene.getY()/ tileSize[1]);
-//        			for (int x = Math.max(enemyTileX-1, 0); x <= Math.min((enemyTileX+1), 79); x++){
-//        				for(int y = Math.max(enemyTileY-1, 0); y <= Math.min((enemyTileY+1), 15); y++){
-//		    				enemyBox = new AABBbox(ene.getX(), ene.getY(), ene.getWidth(), ene.getHeight());
-//		                    tileBox = new AABBbox(x * tileSize[0], y * tileSize[1], tileSize[0], tileSize[1]);
-//		    				while (AABBbox.AABBIntersect(tileBox, enemyBox)){
-//		                    	enemyBox = new AABBbox(ene.getX(), ene.getY(), ene.getWidth(), ene.getHeight());
-//		    					System.out.println("enemy and tile collision : " + AABBbox.AABBIntersect(tileBox, enemyBox));
-//		    					if (x < tileBox.getX() && x < tileBox.getX() + tileBox.getWidth()){
-//		                        	if(tileBox.getX() > ene.getX()){
-//		                        		ene.setX((int) (ene.getX()-1));
-//		                        	}
-//		                        	if(tileBox.getX() < ene.getX()){
-//		                        		ene.setX((int) (ene.getX()+1));
-//		                        	}
-//		    					}
-//		    					if (y < tileBox.getY() && y < tileBox.getY() + tileBox.getHeight()){
-//		                        	if(tileBox.getY() > ene.getY()){
-//		                        		ene.setY((int) (ene.getY()-1)); 
-//		                           	}
-//		                        	if(tileBox.getY() < ene.getY()){
-//		                        		ene.setY((int) (ene.getY()+1));
-//		                          	}
-//		    					}
-//		                    }
-//        				}
-//        			}
     			}
     		
           
@@ -514,6 +493,9 @@ public class JavaTemplate {
 			if (cam.x > worldWidth * tileSize[0] - cam.width) {cam.setX(worldWidth * tileSize[0] - cam.width);}
 			if (cam.y > worldHeight * tileSize[1] - cam.height) {cam.setY(worldHeight * tileSize[1] - cam.height);}
 		    
+			//if character gets to end of bg, game ends
+			//add boss, need projectiles
+			
 			
             /*****************************************************************
              *************************DRAW SPRITES****************************
@@ -549,9 +531,9 @@ public class JavaTemplate {
 			
 			//DRAW ENEMY PROJECTILES
 			for (CharacDef e : enemies) {
-					ArrayList<Projectile> snailProjectiles = (ArrayList<Projectile>) e.getProjectile();
-					for (int i = 0; i < snailProjectiles.size(); i++) {
-						Projectile p = snailProjectiles.get(i);
+					ArrayList<Projectile> enemyProjectiles = (ArrayList<Projectile>) e.getProjectile();
+					for (int i = 0; i < enemyProjectiles.size(); i++) {
+						Projectile p = enemyProjectiles.get(i);
 						glDrawSprite(gl, projectile, (int) p.getX() - cam.getX(), (int) p.getY() - cam.getY(),
 								projectileSize[0], projectileSize[1]);
 					}
