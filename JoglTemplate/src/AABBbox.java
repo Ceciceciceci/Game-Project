@@ -79,27 +79,4 @@ public class AABBbox{
 		return true;
 	}
 	
-	/*If box 1 is left of box 2*/
-	public static boolean AABBisLeftOf(AABBbox box1, AABBbox box2){
-        // box1 to the right
-        return box1.x < box2.x + box2.width;
-	}
-    public static boolean AABBIntersectLeftOf(AABBbox box1,AABBbox box2, double prevX, double currX){
-        return (prevX<currX && AABBIntersect(box1,box2));
-    }
-	/*If box 1 is right of box 2*/
-	public static boolean AABBisRightOf(AABBbox box1, AABBbox box2){
-        // box1 to the right
-        return box1.x < box2.x + box2.width;
-	}
-	/*If box 1 is on top of box 2*/
-	public static boolean AABBisTopOf(AABBbox box1, AABBbox box2){
-        // box1 to the right
-        return AABBIntersect(box1, box2);
-	}
-	/*If box 1 is on the bottom of box 2*/
-	public static boolean AABBisBottomOf(AABBbox box1, AABBbox box2){
-        // box1 to the right
-        return box1.x > box2.x + box2.height;
-	}
 }

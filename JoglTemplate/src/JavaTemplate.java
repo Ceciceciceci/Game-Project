@@ -38,12 +38,13 @@ public class JavaTemplate {
     private static int[] enemyPos = new int[] {spritePos[0]-50, spritePos[1]-50};
     private static int[] bossPos = new int[] {};
 
-	// Initialize texture variables for sprite, projectile.
+	// Initialize texture variables for sprite, projectile, title screen.
     private static int spriteTex,
 				       enemyTex,
 				       bossTex;
     private static int projectile;
-    
+	private static int titleScreen; 
+	
     //initialize background
     private static Tile[][] floorWallTiles;
     private static Tile[][] tableTiles;
@@ -55,6 +56,7 @@ public class JavaTemplate {
     private static int[] tileSize = new int[2];
     private static int[] projectileSize = new int[2];
     private static int[] bossSize = new int[2];
+	private static int[] menuSize = new int[2];
     
     //Size of window size
     private static int windowWidth = 400;
@@ -71,7 +73,8 @@ public class JavaTemplate {
 //***************************************************************
     public static void main(String[] args) {
         GLProfile gl2Profile;
-
+		boolean titleMode = true;
+		
         try {
             // Make sure we have a recent version of OpenGL
             gl2Profile = GLProfile.get(GLProfile.GL2);
@@ -124,6 +127,7 @@ public class JavaTemplate {
         /************ LOAD SPRITE TEX***********/
 		spriteTex = glTexImageTGAFile(gl, "1.tga", spriteSize);
 		enemyTex = glTexImageTGAFile(gl, "1.tga", enemySize);
+		titleScreen = glTexImageTGAFile(gl, "assets/backgrounds/titlecard.tga", menuSize); //title screen
 		
 		/************** CHARACTERS*****************/
 		//Initialize characters 
@@ -195,7 +199,7 @@ public class JavaTemplate {
 
 		FrameAnimation walkAni = new FrameAnimation(walking);
 		FrameAnimation walkAniLeft = new FrameAnimation(walkingLeft);
-//		FrameAnimation jumpingAni = new FrameAnimation(jumping);
+
 		FrameAnimation walkAniEnemy = new FrameAnimation(enemyWalking);
 		FrameAnimation walkAniEnemyRight = new FrameAnimation(enemyWalkingRight);
 		FrameAnimation spinningEnemy = new FrameAnimation(enemySpinning);
@@ -261,7 +265,7 @@ public class JavaTemplate {
 	    AABBbox tileBox;
 		AABBbox spriteBox;
 		AABBbox enemyBox;
-		
+		AABBbox cameraBox;
 		///////////////////////////////////////////////
 		//Frame and Time variables
 		
@@ -293,10 +297,14 @@ public class JavaTemplate {
             int left = KeyEvent.VK_LEFT;
             int up = KeyEvent.VK_UP;
             int down = KeyEvent.VK_DOWN;
-
+            
+            //title screen 
+			titleMode = true;
+            
         	/********PHYSICS UPDATE********/
 
             do{
+            	
                if (chara.isGrounded()){
             	    chara.setyVelocity(0);
                }
@@ -306,7 +314,7 @@ public class JavaTemplate {
 					ArrayList<Projectile> projectile1 = (ArrayList<Projectile>) chara.getProjectile();
 					Projectile p = projectile1.get(i);
 					p.setUpdate();
-					AABBbox projectile = projectile1.get(i).getCollisionBox();
+					AABBbox projectile = projectile1.get(i).getCollisionBox();  //collision box for proj
 					for (CharacDef ene : enemies) {
 						System.out.println(ene.getHealth());
 						if (AABBIntersect(projectile, ene.charaHitbox()) && !(i > projectile1.size() - 1)) {
@@ -319,11 +327,20 @@ public class JavaTemplate {
 								ene.setVisible(false);
 							}
 						}
-					} 
-            	}
+					}
+					
+//					if (timecounter % 5 == 0){ for projectile timer
+					//if projectile is out of the camera, remove it
+					cameraBox = new AABBbox (cam.getX(), cam.getY(), cam.getWidth(), cam.getHeight());
+					if (!AABBIntersect(projectile, cameraBox)){
+						projectile1.get(i).setVisible(false);
+						projectile1.remove(i);
+					}
+//					}
+            	} 
             	
-    			int charaTileX = (int) Math.floor(chara.getX()/tileSize[0]);
-    			int charaTileY = (int) Math.floor(chara.getY()/tileSize[1]);
+    			int charaTileX = (int)(chara.getX()/tileSize[0]);
+    			int charaTileY = (int)(chara.getY()/tileSize[1]);
     			for (int x = Math.max(charaTileX-1, 0); x <= Math.min((charaTileX+1), 79); x++){
     				for(int y = Math.max(charaTileY-1, 0); y <= Math.min((charaTileY+1), 15); y++){
     					if (floorWallTiles[y][x].isCollision() || tableTiles[y][x].isCollision()){
@@ -332,16 +349,16 @@ public class JavaTemplate {
                             
                             while (AABBbox.AABBIntersect(tileBox, spriteBox)){
                             	spriteBox = new AABBbox (chara.getX(), chara.getY(), chara.getWidth(), chara.getHeight());
-            					System.out.println("sprite and tile collision : " + AABBbox.AABBIntersect(tileBox, spriteBox));
+//            					System.out.println("sprite and tile collision : " + AABBbox.AABBIntersect(tileBox, spriteBox));
             					if (x < tileBox.getX() && x < tileBox.getX() + tileBox.getWidth()){
 	                            	if(tileBox.getX() > chara.getX()){
 	                            		 chara.setX((chara.getX()-1));
 	                            	}
 	                            	if(tileBox.getX() < chara.getX()){
 	                           		 	chara.setX((chara.getX()+1));
-	                           		 	System.out.println(" get x 2 " + chara.getX());
+//	                           		 	System.out.println(" get x 2 " + chara.getX());
 	                            	}
-	                            	System.out.println(" get x " +chara.getX());
+//	                            	System.out.println(" get x " + chara.getX());
             					}
             					if (y < tileBox.getY() && y < tileBox.getY() + tileBox.getHeight()){
 	                            	if(tileBox.getY() > chara.getY()){
@@ -349,9 +366,9 @@ public class JavaTemplate {
 	                               	}
 	                            	if(tileBox.getY() < chara.getY()){
 	                             		 chara.setY((chara.getY()+1));
-	                             		System.out.println(" get y 2 " + chara.getY());
+//	                             		System.out.println(" get y 2 " + chara.getY());
 	                              	}
-	                            	System.out.println("get y " + chara.getY());
+//	                            	System.out.println("get y " + chara.getY());
             					}
                             }
                             spriteBox = new AABBbox (chara.getX(), chara.getY(), chara.getWidth(), chara.getHeight());
@@ -375,7 +392,7 @@ public class JavaTemplate {
     				 if (AABBbox.AABBIntersect(enemyBox, spriteBox)){
     					 chara.setHealth(chara.getHealth() - 1);
     					 System.out.println(chara.getHealth());
-						 if(chara.getHealth() < 1){
+						 if(chara.getHealth() <= 1){
 						 	chara.setDead(true);
 							chara.setVisible(false);
 						 } 
@@ -391,10 +408,8 @@ public class JavaTemplate {
 						AABBbox projectile = enemyProjectiles.get(i).getCollisionBox();
 						 spriteBox = new AABBbox (chara.getX(), chara.getY(), chara.getWidth(), chara.getHeight());
 						if (AABBIntersect(projectile, spriteBox)) {
-							if (p2.isReverse()) {
-								enemyProjectiles.get(i).setVisible(false);
-								enemyProjectiles.remove(i);
-							}
+							enemyProjectiles.get(i).setVisible(false);
+							enemyProjectiles.remove(i);
 							chara.setHealth(chara.getHealth() - 1);
 							if(chara.getHealth() < 1){
 								chara.setDead(true);
@@ -418,7 +433,7 @@ public class JavaTemplate {
 //    				if(timecounter % 100 == 0){
 	        			Random ran = new Random();
 	        			float nextRandomFloat = ran.nextFloat();
-	        			System.out.println(nextRandomFloat);
+//	        			System.out.println(nextRandomFloat);
 
 	    				//rand on actions
 	        			
@@ -479,6 +494,7 @@ public class JavaTemplate {
 	        	chara.setX((int) (chara.getX() + deltaTimeMS * 0.3));
 	        	walkAni.updateSprite(deltaTimeMS);
 	        	chara.setCurrentTexture(walkAni.getCurrentFrame());
+	        	chara.setReverse(false);
 	        }
 	        
 	        if (kbState[up] == true) {
@@ -498,17 +514,19 @@ public class JavaTemplate {
 	        	chara.setX(0);}
 	        if (chara.getX() >= worldWidth * tileSize[0] - spriteSize[0]){
 	        	chara.setX(worldWidth*tileSize[0] - spriteSize[0]);
-	        	System.out.println(chara.getX());}
+//	        	System.out.println(chara.getX());
+	        	}
 	        if (chara.getY() < 0) {
 	        	chara.setY(0);}
 	        if (chara.getY() >= worldHeight*tileSize[1] - spriteSize[1]){
 	        	chara.setY(worldHeight*tileSize[1] - spriteSize[1]);
-	        	System.out.println(chara.getY());}
+//	        	System.out.println(chara.getY());
+	        	}
 	         
 	        
 	        if (kbState[KeyEvent.VK_SPACE] == true){
 	        	chara.addProjectile(new Projectile((int)chara.getX() + 40, (int)chara.getY(), projectileSize[0],
-						projectileSize[1], false));
+						projectileSize[1], chara.getReverse()));
 	        	chara.setShooting(false);
 	        }
 	        
@@ -554,17 +572,20 @@ public class JavaTemplate {
 								(int)(p.getX() - cam.getX()), 
 								(int)(p.getY() - cam.getY()),
 								projectileSize[0], 
-								projectileSize[1] );
+								projectileSize[1]);
 			}
 			
 			//DRAW ENEMY PROJECTILES
 			for (CharacDef e : enemies) {
-					ArrayList<Projectile> enemyProjectiles = (ArrayList<Projectile>) e.getProjectile();
-					for (int i = 0; i < enemyProjectiles.size(); i++) {
-						Projectile p2 = enemyProjectiles.get(i);
-						glDrawSprite(gl, projectile, (int) p2.getX() - cam.getX(), (int) p2.getY() - cam.getY(),
-								projectileSize[0], projectileSize[1]);
-					}
+				ArrayList<Projectile> enemyProjectiles = (ArrayList<Projectile>) e.getProjectile();
+				for (int i = 0; i < enemyProjectiles.size(); i++) {
+					Projectile p2 = enemyProjectiles.get(i);
+					glDrawSprite(gl, projectile, 
+						(int) p2.getX() - cam.getX(), 
+						(int) p2.getY() - cam.getY(),
+						projectileSize[0], 
+						projectileSize[1]);
+				}
 			}
 			
 			//DRAW ENEMY SPRITES
@@ -582,7 +603,9 @@ public class JavaTemplate {
 			glDrawSprite(gl, chara.getCurrentTexture(), 
 					(int)chara.getX() - cam.getX() + tileSize[0]/4, 
 					(int)chara.getY() - cam.getY()-  tileSize[1]/2, 
-					spriteSize[0], spriteSize[1]);	
+					spriteSize[0], spriteSize[1]);
+			
+			
         }
     }
 
@@ -644,7 +667,7 @@ public class JavaTemplate {
     		{tiles.get(9),tiles.get(5),tiles.get(6),tiles.get(8),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(9),tiles.get(3),tiles.get(4),tiles.get(8),tiles.get(7),tiles.get(7),tiles.get(12),tiles.get(7),tiles.get(7),tiles.get(9),tiles.get(8),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7)},
     		{tiles.get(9),tiles.get(8),tiles.get(9),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(9),tiles.get(5),tiles.get(6),tiles.get(8),tiles.get(7),tiles.get(7),tiles.get(12),tiles.get(7),tiles.get(8),tiles.get(9),tiles.get(9),tiles.get(8),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7)},
     		{tiles.get(10),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(11),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7),tiles.get(7)}
-};
+    		};
     }
     
     // Load a file into an OpenGL texture and return that texture.

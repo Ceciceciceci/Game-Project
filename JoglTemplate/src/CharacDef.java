@@ -15,7 +15,7 @@ public class CharacDef {
 	//reverse chara texture
 	private boolean reverse = false;
 	private boolean visible = true;
-	
+	int timer;
 	private boolean isShooting, isShot, isDead, isHit = false;
 	private boolean isWalking, isStanding, isJumping, isGrounded= false;
  
@@ -34,6 +34,7 @@ public class CharacDef {
 		isShot = false;
 		isDead = false;
 		boxOffset = 0;
+		timer = 5;
 	}
 	
 	public void setHeight(int height){
@@ -65,7 +66,6 @@ public class CharacDef {
 	public double getY() {
 		return y;
 	}
-	 
 	 
 	 public int getCurrentTexture() {
 		 return tex;
@@ -111,18 +111,16 @@ public class CharacDef {
 	 
 	 //Reverse the sprite 
 	 public boolean reverse(){
-
 	     x = x * -1;
 	     y = x * -1;
-	     return true;
-	    	
+	     return true;	
 	 } 
 	
 	//SHOOT PART
 	//collision box AABB
-	public AABBbox charaHitbox(){
-		return charaHitBox;
-	}
+	 public AABBbox charaHitbox(){
+	 	 return charaHitBox;
+	 }
 	
 	 public List<Projectile> getProjectile(){
 		 return projectiles;
@@ -166,6 +164,14 @@ public class CharacDef {
 		 return visible;
 	 }
 	  
+	 public void setTimer(int timer){
+		 this.timer = timer;
+	 }
+	 
+	 public int getTimer(){
+		 return timer;
+	 }
+	 
 	 public boolean isGrounded(){
 		return isGrounded;
 	}

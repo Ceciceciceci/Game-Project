@@ -6,7 +6,7 @@ public class Camera {
 	public int y;
     public int width;
     public int height;
-    private AABBbox box;
+    AABBbox box;
     
     public Camera(int x, int y)
     {
@@ -25,12 +25,12 @@ public class Camera {
     	this.y = y;
     	this.box.updateY(this.y);
     }
-//    public void setWidth(int width){
-//    	this.width = width;
-//    }
-//    public void setHeight(int height){
-//        this.height = height;
-//    }
+    public void setWidth(int width){
+    	this.width = width;
+    }
+    public void setHeight(int height){
+        this.height = height;
+    }
     
     public int getX(){
     	return x;
@@ -38,12 +38,12 @@ public class Camera {
     public int getY(){
     	return y;
     }
-//    public int getWidth(){
-//    	return width;
-//    }
-//    public int getHeight(){
-//    	return height;
-//    }
+    public int getWidth(){
+    	return width;
+    }
+    public int getHeight(){
+    	return height;
+    }
     
 	public AABBbox getAABBIntersection(){
 		return box;
