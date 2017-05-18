@@ -9,8 +9,8 @@ import javax.sound.sampled.DataLine;
 
 public class SoundClip {
     private byte[] mBytes;
-    private DataLine.Info mInfo;
     private AudioFormat mFormat;
+    private DataLine.Info mInfo;
 
     private SoundClip() {}
 

@@ -9,14 +9,14 @@ public class CharacDef {
 	private double yVelocity, acceleration, speed;
 	private ArrayList<Projectile> projectiles;
 	private int health = 0;
-	AABBbox charaHitBox;
+	AABBbox charaHitBox; 
 	private int boxOffset;
 	
 	//reverse chara texture
 	private boolean reverse = false;
 	private boolean visible = true;
 	
-	private boolean isShooting, isShot, isDead = false;
+	private boolean isShooting, isShot, isDead, isHit = false;
 	private boolean isWalking, isStanding, isJumping, isGrounded= false;
  
 	public CharacDef (int x, int y, int height, int width, int spriteTex){
@@ -116,7 +116,7 @@ public class CharacDef {
 	     y = x * -1;
 	     return true;
 	    	
-	 }
+	 } 
 	
 	//SHOOT PART
 	//collision box AABB
@@ -129,7 +129,7 @@ public class CharacDef {
 	 }
 	 public void addProjectile(Projectile p){
 		 projectiles.add(p);
-	 }
+	 } 
 	
 	 public void setHealth(int health){
 		 this.health = health;
@@ -149,13 +149,14 @@ public class CharacDef {
 	 	 return isShooting;
 	 }
 	 
-	 public boolean isShot() {
-		return isShot;
+	 public boolean isHit() {
+		 return isHit;
 	 }
 
-	 public void setHit(boolean isShot) {
-		 this.isShot = isShot;
+	 public void setHit(boolean isHit) {
+		 this.isHit = isHit;
 	 }
+
 	 
 	 public void setVisible(boolean bool){
 		 visible = bool;
@@ -164,7 +165,7 @@ public class CharacDef {
 	 public boolean getVisible() {
 		 return visible;
 	 }
-	 
+	  
 	 public boolean isGrounded(){
 		return isGrounded;
 	}
@@ -174,6 +175,4 @@ public class CharacDef {
 	public boolean isDead(){
 		return isDead;
 	}
-	 
-	
 }

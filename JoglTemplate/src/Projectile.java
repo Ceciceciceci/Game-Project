@@ -7,9 +7,9 @@ public class Projectile {
 	private int speed; 
 	private int distance;
 	private double gravity;
-	
+
 	private boolean visible;
-	private boolean isRock;	
+	private boolean isShot;	
 	private boolean update;
 	private boolean reverse;
 	private AABBbox collisionBox;
@@ -19,6 +19,7 @@ public class Projectile {
 		this.y = y;
 		this.width = width;
 		this.height = height;
+		reverse = isLeft;
 		if(!isLeft){
 			this.speed = 3;
 			this.x = x;
@@ -76,16 +77,16 @@ public class Projectile {
 		this.reverse = reverse;
 	}
 	
-	public boolean isRock() {
-		return isRock;
+	public boolean isShot() {
+		return isShot;
 	}
 
-	public void setRock(boolean isRock) {
-		this.isRock = isRock;
+	public void setShot(boolean isShot) {
+		this.isShot = isShot;
 	}
 	
 	public void setUpdate(){
-		if(this.isRock()){
+		if(this.isShot()){
 			y += speed;
 			distance += speed;
 			collisionBox.setY((int) y);
